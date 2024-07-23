@@ -44,13 +44,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.bekvon.bukkit.residence.Placeholders.Placeholder;
 import com.bekvon.bukkit.residence.Placeholders.PlaceholderAPIHook;
 import com.bekvon.bukkit.residence.nms.v1_13Events;
-import com.bekvon.bukkit.residence.api.ChatInterface;
 import com.bekvon.bukkit.residence.api.MarketBuyInterface;
 import com.bekvon.bukkit.residence.api.MarketRentInterface;
 import com.bekvon.bukkit.residence.api.ResidenceApi;
 import com.bekvon.bukkit.residence.api.ResidenceInterface;
 import com.bekvon.bukkit.residence.api.ResidencePlayerInterface;
-import com.bekvon.bukkit.residence.chat.ChatManager;
 import com.bekvon.bukkit.residence.commands.padd;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.containers.MinimizeFlags;
@@ -101,7 +99,6 @@ import com.residence.zip.ZipLibrary;
 import net.Zrips.CMILib.Colors.CMIChatColor;
 import net.Zrips.CMILib.Items.CMIMaterial;
 import net.Zrips.CMILib.Util.CMIVersionChecker;
-import net.Zrips.CMILib.Version.Version;
 import net.Zrips.CMILib.Version.Schedulers.CMIScheduler;
 import net.Zrips.CMILib.Version.Schedulers.CMITask;
 
@@ -141,7 +138,6 @@ public class Residence extends JavaPlugin {
     public WorldItemManager imanager;
     public WorldFlagManager wmanager;
     protected RentManager rentmanager;
-    protected ChatManager chatmanager;
     protected Server server;
     public HelpEntry helppages;
     protected LocaleManager LocaleManager;
@@ -221,7 +217,6 @@ public class Residence extends JavaPlugin {
     private MarketRentInterface MarketRentAPI = null;
     private ResidencePlayerInterface PlayerAPI = null;
     private ResidenceInterface ResidenceAPI = null;
-    private ChatInterface ChatAPI = null;
 
     public ResidencePlayerInterface getPlayerManagerAPI() {
         if (PlayerAPI == null)
@@ -256,12 +251,6 @@ public class Residence extends JavaPlugin {
             MarketBuyAPI = tmanager;
         return MarketBuyAPI;
 
-    }
-
-    public ChatInterface getResidenceChatAPI() {
-        if (ChatAPI == null)
-            ChatAPI = chatmanager;
-        return ChatAPI;
     }
 
     public ResidenceCommandListener getCommandManager() {
@@ -476,7 +465,6 @@ public class Residence extends JavaPlugin {
             imanager = new WorldItemManager(this);
             wmanager = new WorldFlagManager(this);
 
-            chatmanager = new ChatManager();
             rentmanager = new RentManager(this);
 
             LocaleManager = new LocaleManager(this);
@@ -607,8 +595,7 @@ public class Residence extends JavaPlugin {
                 pm.registerEvents(flistener, this);
                 pm.registerEvents(shlistener, this);
 
-                if (Version.isCurrentEqualOrHigher(Version.v1_13_R1))
-                    pm.registerEvents(new v1_13Events(this), this);
+                pm.registerEvents(new v1_13Events(this), this);
 
                 firstenable = false;
             } else {
@@ -931,10 +918,6 @@ public class Residence extends JavaPlugin {
 
     public ResidenceEntityListener getEntityListener() {
         return elistener;
-    }
-
-    public ChatManager getChatManager() {
-        return chatmanager;
     }
 
     public String getResidenceVersion() {

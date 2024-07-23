@@ -391,15 +391,6 @@ public class ResidencePlayer {
         return player;
     }
 
-    public ClaimedResidence getCurrentlyRaidedResidence() {
-        for (ClaimedResidence one : getResList()) {
-            if (one.getRaid().isUnderRaid() || one.getRaid().isInPreRaid()) {
-                return one;
-            }
-        }
-        return null;
-    }
-
     public PlayerGroup getGroups() {
         return groups;
     }

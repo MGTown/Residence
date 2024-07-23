@@ -606,8 +606,6 @@ public class ResidenceManager implements ResidenceInterface {
 
             regenerateArea(res);
 
-            if (plugin.getConfigManager().isRemoveLwcOnDelete() && plugin.isLwcPresent())
-                ResidenceLWCListener.removeLwcFromResidence(player, res);
             if (regenerate) {
                 for (CuboidArea one : res.getAreaArray()) {
                     plugin.getSelectionManager().regenerate(one);
@@ -636,10 +634,6 @@ public class ResidenceManager implements ResidenceInterface {
                     else if (rPlayer != null)
                         plugin.getTransactionManager().giveEconomyMoney(rPlayer.getPlayerName(), chargeamount);
                 }
-            }
-
-            if (res.getBank().getStoredMoneyD() > 0 && plugin.getConfigManager().isResBankBack()) {
-                plugin.getTransactionManager().giveEconomyMoney(res.getOwner(), res.getBank().getStoredMoneyD());
             }
         }
     }
@@ -737,10 +731,6 @@ public class ResidenceManager implements ResidenceInterface {
 
         String resNameOwner = "&e" + plugin.msg(lm.Residence_Line, areaname);
         resNameOwner += plugin.msg(lm.General_Owner, perms.getOwner());
-        if (plugin.getConfigManager().enableEconomy()) {
-            if (res.isOwner(sender) || !(sender instanceof Player) || resadmin)
-                resNameOwner += plugin.msg(lm.Bank_Name, res.getBank().getStoredMoneyFormated());
-        }
         resNameOwner = CMIChatColor.translate(resNameOwner);
 
         String worldInfo = plugin.msg(lm.General_World, perms.getWorldName());
@@ -1317,11 +1307,6 @@ public class ResidenceManager implements ResidenceInterface {
         ClaimedResidence res = this.getByName(oldName);
         if (res == null) {
             plugin.msg(player, lm.Invalid_Residence);
-            return false;
-        }
-
-        if (res.getRaid().isRaidInitialized() && !resadmin) {
-            plugin.msg(player, lm.Raid_cantDo);
             return false;
         }
 

@@ -21,6 +21,7 @@ dependencies {
     compileOnly("com.github.Zrips:CMILib:1.4.7.4")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
+    compileOnly("net.luckperms:api:5.4")
 }
 
 java {

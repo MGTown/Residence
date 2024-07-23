@@ -30,7 +30,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import com.bekvon.bukkit.residence.Residence;
-import com.bekvon.bukkit.residence.chat.ChatChannel;
 import com.bekvon.bukkit.residence.commands.padd;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.containers.MinimizeMessages;
@@ -1057,10 +1056,7 @@ public class ClaimedResidence {
                 Block block2 = newLoc.clone().add(0, 1, 0).getBlock();
                 Block block3 = newLoc.clone().add(0, -1, 0).getBlock();
 
-                if (Version.isFolia()) {
-                    found = true;
-                    break;
-                } else if (ResidencePlayerListener.isEmptyBlock(block) && ResidencePlayerListener.isEmptyBlock(block2)
+                if (ResidencePlayerListener.isEmptyBlock(block) && ResidencePlayerListener.isEmptyBlock(block2)
                         && !ResidencePlayerListener.isEmptyBlock(block3)) {
                     found = true;
                     break;
@@ -1136,10 +1132,7 @@ public class ClaimedResidence {
                 Block block = loc.getBlock();
                 Block block2 = loc.clone().add(0, 1, 0).getBlock();
                 Block block3 = loc.clone().add(0, -1, 0).getBlock();
-                if (Version.isFolia()) {
-                    found = true;
-                    break;
-                } else if (!ResidencePlayerListener.isEmptyBlock(block3) && ResidencePlayerListener.isEmptyBlock(block)
+                if (!ResidencePlayerListener.isEmptyBlock(block3) && ResidencePlayerListener.isEmptyBlock(block)
                         && ResidencePlayerListener.isEmptyBlock(block2)) {
                     break;
                 }
@@ -1373,10 +1366,6 @@ public class ClaimedResidence {
         if (tpLoc == null)
             return 0;
 
-        // Temp fix for Folia.
-        if (Version.isFolia())
-            return 0;
-
         Location tempLoc = this.getTeleportLocation(player, false);
 
         if (tempLoc == null)
@@ -1528,32 +1517,17 @@ public class ClaimedResidence {
             targetPlayer.closeInventory();
 
             try {
-                if (!Version.isFolia())
-                    targloc.getChunk().load();
+                targloc.getChunk().load();
             } catch (Throwable e) {
             }
 
-            if (Version.isFolia()) {
+            boolean teleported = targetPlayer.teleport(targloc);
 
-                CompletableFuture<Boolean> future = CMITeleporter.teleportAsync(targetPlayer, targloc);
-                future.thenAccept(result -> {
-                    if (result) {
-                        if (near)
-                            Residence.getInstance().msg(targetPlayer, lm.Residence_TeleportNear);
-                        else
-                            Residence.getInstance().msg(targetPlayer, lm.General_TeleportSuccess);
-                    }
-                });
-
-            } else {
-                boolean teleported = targetPlayer.teleport(targloc);
-
-                if (teleported) {
-                    if (near)
-                        Residence.getInstance().msg(targetPlayer, lm.Residence_TeleportNear);
-                    else
-                        Residence.getInstance().msg(targetPlayer, lm.General_TeleportSuccess);
-                }
+            if (teleported) {
+                if (near)
+                    Residence.getInstance().msg(targetPlayer, lm.Residence_TeleportNear);
+                else
+                    Residence.getInstance().msg(targetPlayer, lm.General_TeleportSuccess);
             }
 
         }
@@ -2089,26 +2063,6 @@ public class ClaimedResidence {
         }
 
         return true;
-    }
-
-    public void setChatPrefix(String ChatPrefix) {
-        this.ChatPrefix = ChatPrefix;
-    }
-
-    public String getChatPrefix() {
-        return this.ChatPrefix == null ? "" : this.ChatPrefix;
-    }
-
-    public void setChannelColor(CMIChatColor ChannelColor) {
-        this.ChannelColor = ChannelColor;
-    }
-
-    public ChatChannel getChatChannel() {
-        return Residence.getInstance().getChatManager().getChannel(this.getName());
-    }
-
-    public CMIChatColor getChannelColor() {
-        return ChannelColor;
     }
 
     public UUID getOwnerUUID() {

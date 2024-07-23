@@ -228,32 +228,15 @@ public class RandomTp {
                     if (loc.getWorld().getEnvironment().equals(Environment.NETHER)) {
                         loc.setY(CMIWorld.getMaxHeight(loc.getWorld()) / 2);
                     } else {
-                        if (Version.isFolia()) {
+                        CompletableFuture<Chunk> chunkFuture = PaperLib.getChunkAtAsync(loc, false);
+                        Chunk chunk = chunkFuture.get();
 
-                            Location location = loc;
+                        if (chunk == null)
+                            continue;
 
-                            CompletableFuture<Void> fut = CMIScheduler.runAtLocation(loc, () -> {
-                                Chunk chunk = location.getChunk();
-                                int y = chunk.getChunkSnapshot().getHighestBlockYAt(location.getBlockX() & 0xF, location.getBlockZ() & 0xF) - 1;
-                                location.setY(y);
-                            });
-                            fut.get();
+                        int y = chunk.getChunkSnapshot().getHighestBlockYAt(loc.getBlockX() & 0xF, loc.getBlockZ() & 0xF) - 1;
 
-                            loc = location;
-
-                        } else if (Version.isPaper() && Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
-                            CompletableFuture<Chunk> chunkFuture = PaperLib.getChunkAtAsync(loc, false);
-                            Chunk chunk = chunkFuture.get();
-
-                            if (chunk == null)
-                                continue;
-
-                            int y = chunk.getChunkSnapshot().getHighestBlockYAt(loc.getBlockX() & 0xF, loc.getBlockZ() & 0xF) - 1;
-
-                            loc.setY(y);
-                        } else {
-                            loc.setY(loc.getWorld().getHighestBlockYAt(loc));
-                        }
+                        loc.setY(y);
                     }
                 }
 
@@ -264,36 +247,16 @@ public class RandomTp {
 
                 ValidLocation empty = new ValidLocation();
 
-                if (Version.isFolia()) {
-                    Location location = loc;
-                    CompletableFuture<Void> fut = CMIScheduler.runAtLocation(loc, () -> {
-                        empty.valid = ResidencePlayerListener.isEmptyBlock(location.getBlock());
-
-                        if (!empty.valid)
-                            return;
-
-                        empty.valid = !location.clone().add(0, -1, 0).getBlock().getType().equals(Material.LAVA);
-
-                        if (!empty.valid)
-                            return;
-
-                        empty.valid = !location.clone().add(0, -1, 0).getBlock().getType().equals(Material.WATER);
-                    });
-                    fut.get();
-                } else {
-                    empty.valid = ResidencePlayerListener.isEmptyBlock(loc.getBlock());
-                }
+                empty.valid = ResidencePlayerListener.isEmptyBlock(loc.getBlock());
 
                 if (!empty.valid)
                     continue;
 
-                if (!Version.isFolia()) {
-                    if (loc.clone().add(0, -1, 0).getBlock().getType().equals(Material.LAVA))
-                        continue;
+                if (loc.clone().add(0, -1, 0).getBlock().getType().equals(Material.LAVA))
+                    continue;
 
-                    if (loc.clone().add(0, -1, 0).getBlock().getType().equals(Material.WATER))
-                        continue;
-                }
+                if (loc.clone().add(0, -1, 0).getBlock().getType().equals(Material.WATER))
+                    continue;
 
                 ClaimedResidence res = plugin.getResidenceManager().getByLoc(loc);
 
@@ -324,40 +287,19 @@ public class RandomTp {
             loc.setY(loc.getBlockY());
 
             if (!oloc.getWorld().getEnvironment().equals(Environment.NETHER)) {
-                if (Version.isFolia()) {
+                CompletableFuture<Chunk> chunkFuture = PaperLib.getChunkAtAsync(loc, true);
 
-                    Location location = loc.clone();
+                Chunk chunk = chunkFuture.get();
 
-                    CompletableFuture<Void> fut = CMIScheduler.runAtLocation(loc, () -> {
-                        Chunk chunk = location.getChunk();
-                        int y = chunk.getChunkSnapshot().getHighestBlockYAt(location.getBlockX() & 0xF, location.getBlockZ() & 0xF) - 1;
-                        location.setY(y + 1);
-                    });
-                    fut.get();
+                if (chunk == null)
+                    return null;
 
-                    loc = location;
+                int y = chunk.getChunkSnapshot().getHighestBlockYAt(loc.getBlockX() & 0xF, loc.getBlockZ() & 0xF) - 1;
 
-                } else if (Version.isPaper() && Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
-                    CompletableFuture<Chunk> chunkFuture = PaperLib.getChunkAtAsync(loc, true);
-
-                    Chunk chunk = chunkFuture.get();
-
-                    if (chunk == null)
-                        return null;
-
-                    int y = chunk.getChunkSnapshot().getHighestBlockYAt(loc.getBlockX() & 0xF, loc.getBlockZ() & 0xF) - 1;
-
-                    if (loc.getY() < y) {
-                        return null;
-                    }
-                    loc.setY(y + 1);
-                } else {
-                    int y = loc.getWorld().getHighestBlockYAt(loc);
-                    if (loc.getY() < y) {
-                        return null;
-                    }
-                    loc.setY(y + 1);
+                if (loc.getY() < y) {
+                    return null;
                 }
+                loc.setY(y + 1);
                 if (oloc.getWorld().getEnvironment().equals(Environment.THE_END) && loc.getY() < 5)
                     return null;
 

@@ -33,7 +33,7 @@ public class Language {
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-        f = new File(plugin.getDataFolder(), "Language" + File.separator + "English.yml");
+        f = new File(plugin.getDataFolder(), "Language" + File.separator + "Chinese.yml");
         if (!f.isFile())
             try {
                 f.createNewFile();
@@ -41,7 +41,7 @@ public class Language {
                 e2.printStackTrace();
             }
         customlocale = new YmlMaker(plugin, "Language" + File.separator + plugin.getConfigManager().getLanguage() + ".yml").getConfig();
-        enlocale = new YmlMaker(plugin, "Language" + File.separator + "English.yml").getConfig();
+        enlocale = new YmlMaker(plugin, "Language" + File.separator + "Chinese.yml").getConfig();
         if (customlocale == null)
             customlocale = enlocale;
     }

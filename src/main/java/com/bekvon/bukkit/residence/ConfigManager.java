@@ -636,7 +636,7 @@ public class ConfigManager {
 
         c.addComment("Global.Language", "This loads the <language>.yml file in the Residence Language folder",
                 "All Residence text comes from this file. (NOT DONE YET)");
-        language = c.get("Global.Language", "English");
+        language = c.get("Global.Language", "Chinese");
 
         c.addComment("Global.SelectionToolId", "Wooden Hoe is the default selection tool for Residence.");
         selectionTool = CMIMaterial.get(c.get("Global.SelectionToolId", CMIMaterial.WOODEN_HOE.name()));

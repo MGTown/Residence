@@ -32,10 +32,6 @@ public class clearflags implements cmd {
             return null;
         }
 
-        if (area.getRaid().isRaidInitialized()) {
-            plugin.msg(sender, lm.Raid_cantDo);
-            return null;
-        }
         area.getPermissions().clearFlags();
         plugin.msg(player, lm.Flag_Cleared);
 

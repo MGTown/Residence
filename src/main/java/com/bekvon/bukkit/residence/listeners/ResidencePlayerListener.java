@@ -55,12 +55,9 @@ import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import com.bekvon.bukkit.residence.ConfigManager;
 import com.bekvon.bukkit.residence.Residence;
-import com.bekvon.bukkit.residence.chat.ChatChannel;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.containers.ResidencePlayer;
 import com.bekvon.bukkit.residence.containers.StuckInfo;
@@ -93,7 +90,6 @@ import net.Zrips.CMILib.Entities.CMIEntity;
 import net.Zrips.CMILib.Entities.CMIEntityType;
 import net.Zrips.CMILib.Items.CMIItemStack;
 import net.Zrips.CMILib.Items.CMIMaterial;
-import net.Zrips.CMILib.Logs.CMIDebug;
 import net.Zrips.CMILib.TitleMessages.CMITitleMessage;
 import net.Zrips.CMILib.Util.CMIVersionChecker;
 import net.Zrips.CMILib.Version.Version;
@@ -872,7 +868,6 @@ public class ResidencePlayerListener implements Listener {
         lastUpdate.remove(event.getPlayer().getUniqueId());
         lastOutsideLoc.remove(event.getPlayer().getUniqueId());
 
-        plugin.getChatManager().removeFromChannel(pname);
         plugin.getPlayerListener().removePlayerResidenceChat(event.getPlayer());
         plugin.addOfflinePlayerToChache(event.getPlayer());
 
@@ -1837,18 +1832,6 @@ public class ResidencePlayerListener implements Listener {
 
         Location loc = event.getBlockClicked().getLocation().clone();
 
-        if (Version.isCurrentHigher(Version.v1_12_R1)) {
-
-            if (Version.isCurrentHigher(Version.v1_13_R1) && event.getBlockClicked().getBlockData() instanceof org.bukkit.block.data.Waterlogged waterloggedBlock) {
-                if (waterloggedBlock.isWaterlogged())
-                    loc.add(event.getBlockFace().getDirection());
-            } else
-                try {
-                    loc.add(event.getBlockFace().getDirection());
-                } catch (Throwable e) {
-                }
-        }
-
         ClaimedResidence res = plugin.getResidenceManager().getByLoc(loc);
         if (res != null) {
             if (plugin.getConfigManager().preventRentModify() && plugin.getConfigManager().enabledRentSystem()) {
@@ -2006,14 +1989,6 @@ public class ResidencePlayerListener implements Listener {
             event.setKeepLevel(true);
             event.setDroppedExp(0);
         }
-
-        if (res.getPermissions().has(Flags.respawn, false) && Version.isSpigot())
-            CMIScheduler.runTaskLater(() -> {
-                try {
-                    event.getEntity().spigot().respawn();
-                } catch (Throwable e) {
-                }
-            }, 20L);
     }
 
     public static Location getSafeLocation(Location loc) {
@@ -2305,11 +2280,6 @@ public class ResidencePlayerListener implements Listener {
 
         if (player == null || !player.isOnline() || loc == null)
             return false;
-
-        if (Version.isFolia()) {
-            CMITeleporter.teleportAsync(player, loc);
-            return true;
-        }
 
         return CMITeleporter.teleport(player, loc);
     }
@@ -2730,15 +2700,9 @@ public class ResidencePlayerListener implements Listener {
                 if (world == null)
                     continue;
 
-                if (Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
-                    for (CuboidArea area : res.getAreaMap().values()) {
-                        entities.addAll(world.getNearbyEntities(BoundingBox.of(area.getLowVector(), area.getHighVector())));
-                    }
-                } else {
-                    for (CuboidArea area : res.getAreaMap().values()) {
-                        for (ChunkRef chunk : area.getChunks()) {
-                            entities.addAll(Arrays.asList(world.getChunkAt(chunk.getX(), chunk.getZ()).getEntities()));
-                        }
+                for (CuboidArea area : res.getAreaMap().values()) {
+                    for (ChunkRef chunk : area.getChunks()) {
+                        entities.addAll(Arrays.asList(world.getChunkAt(chunk.getX(), chunk.getZ()).getEntities()));
                     }
                 }
 
@@ -2755,22 +2719,6 @@ public class ResidencePlayerListener implements Listener {
             }
         } catch (Exception ex) {
         }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
-        // disabling event on world
-        if (plugin.isDisabledWorldListener(event.getPlayer().getWorld()))
-            return;
-        String pname = event.getPlayer().getName();
-        if (!chatenabled || !playerToggleChat.contains(event.getPlayer().getUniqueId()))
-            return;
-
-        ChatChannel channel = plugin.getChatManager().getPlayerChannel(pname);
-        if (channel != null) {
-            channel.chat(pname, event.getMessage());
-        }
-        event.setCancelled(true);
     }
 
     public void tooglePlayerResidenceChat(Player player, String residence) {

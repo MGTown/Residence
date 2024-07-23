@@ -209,11 +209,6 @@ public class LeaseManager {
             if (plugin.getConfigManager().enableEconomy() && plugin.getConfigManager().autoRenewLeases()) {
                 if (cost == 0) {
                     renewed = true;
-                } else if (res.getBank().hasEnough(cost)) {
-                    res.getBank().subtract(cost);
-                    renewed = true;
-                    if (plugin.getConfigManager().debugEnabled())
-                        System.out.println("Lease Renewed From Residence Bank: " + resname);
                 } else if (plugin.getEconomyManager().canAfford(owner, cost)) {
                     if (plugin.getEconomyManager().subtract(owner, cost)) {
                         renewed = true;

@@ -1440,9 +1440,6 @@ public class ResidenceEntityListener implements Listener {
         if (event.getBow() == null)
             return;
 
-        if (event.getBow().getType() != Material.CROSSBOW)
-            return;
-
         if (!(event.getEntity() instanceof Player))
             return;
 

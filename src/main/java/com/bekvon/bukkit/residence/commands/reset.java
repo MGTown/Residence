@@ -43,11 +43,6 @@ public class reset implements cmd {
                 return true;
             }
 
-            if (res.getRaid().isRaidInitialized() && !resadmin) {
-                plugin.msg(sender, lm.Raid_cantDo);
-                return true;
-            }
-
             res.getPermissions().applyDefaultFlags();
             plugin.msg(sender, lm.Flag_reset, res.getName());
             return true;

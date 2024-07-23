@@ -52,11 +52,6 @@ public class kick implements cmd {
         if (!res.isOwner(player) && !res.getPermissions().playerHas(player, Flags.admin, false))
             return false;
 
-        if (res.getRaid().isRaidInitialized()) {
-            plugin.msg(sender, lm.Raid_cantDo);
-            return true;
-        }
-
         if (!res.getPlayersInResidence().contains(targetplayer))
             return false;
 

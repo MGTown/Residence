@@ -36,11 +36,6 @@ public class setowner implements cmd {
             return null;
         }
 
-        if (area.getRaid().isRaidInitialized() && !resadmin) {
-            plugin.msg(sender, lm.Raid_cantDo);
-            return null;
-        }
-
         if (!plugin.isPlayerExist(sender, args[1], true)) {
             return null;
         }

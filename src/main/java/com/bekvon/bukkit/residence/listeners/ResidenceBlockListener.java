@@ -87,58 +87,6 @@ public class ResidenceBlockListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onButtonHitWithProjectile(ProjectileHitEvent e) {
-        // Disabling listener if flag disabled globally
-        if (!Flags.button.isGlobalyEnabled())
-            return;
-
-        if (Version.isCurrentEqualOrLower(Version.v1_12_R1))
-            return;
-
-        if (e.getHitBlock() == null)
-            return;
-
-        if (plugin.isDisabledWorldListener(e.getHitBlock().getWorld()))
-            return;
-
-        if (!(e.getEntity().getShooter() instanceof Player player))
-            return;
-
-        Block block = e.getHitBlock().getLocation().clone().add(e.getHitBlockFace().getDirection()).getBlock();
-
-        if (!CMIMaterial.isButton(block.getType()))
-            return;
-
-        FlagPermissions perms = plugin.getPermsByLocForPlayer(block.getLocation(), player);
-
-        boolean hasuse = perms.playerHas(player, Flags.use, true);
-
-        Flags result = FlagPermissions.getMaterialUseFlagList().get(block.getType());
-        if (result != null) {
-            main:
-            if (!perms.playerHas(player, result, hasuse)) {
-
-                switch (result) {
-                    case button:
-                        if (ResPerm.bypass_button.hasPermission(player, 10000L))
-                            break main;
-                        break;
-                }
-
-                e.setCancelled(true);
-                plugin.msg(player, lm.Flag_Deny, result);
-                CMIScheduler.runAtLocation(block.getLocation(), () -> {
-                    Location loc = block.getLocation().clone();
-                    loc.add(e.getHitBlockFace().getDirection());
-                    CMITeleporter.teleportAsync(e.getEntity(), loc);
-                    e.getEntity().setVelocity(e.getEntity().getVelocity().multiply(-1));
-                });
-
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
     public void onAnvilInventoryClick(InventoryClickEvent e) {
         // Disabling listener if flag disabled globally
         if (!Flags.anvilbreak.isGlobalyEnabled())
@@ -672,9 +620,6 @@ public class ResidenceBlockListener implements Listener {
             return;
 
         event.setCancelled(true);
-
-        if (!Version.isCurrentEqualOrHigher(Version.v1_17_R1) || event.getBlock().getType() != Material.POWDER_SNOW) {
-        }
     }
 
     public static boolean canPlaceBlock(Player player, Block block, boolean informPlayer) {
@@ -1056,12 +1001,6 @@ public class ResidenceBlockListener implements Listener {
             return;
 
         Player player = null;
-        // Crude attempt to get player object. Older versions will create exception of missing method
-        try {
-            if (event.getEntity() instanceof Player)
-                player = (Player) event.getEntity();
-        } catch (Throwable e) {
-        }
 
         ArrayList<Vector> corners = getNetherPortalCorners(event);
 
