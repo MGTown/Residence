@@ -98,7 +98,6 @@ import com.residence.zip.ZipLibrary;
 
 import net.Zrips.CMILib.Colors.CMIChatColor;
 import net.Zrips.CMILib.Items.CMIMaterial;
-import net.Zrips.CMILib.Util.CMIVersionChecker;
 import net.Zrips.CMILib.Version.Schedulers.CMIScheduler;
 import net.Zrips.CMILib.Version.Schedulers.CMITask;
 
@@ -117,8 +116,6 @@ public class Residence extends JavaPlugin {
     protected SelectionManager smanager;
     public PermissionManager gmanager;
     protected ConfigManager configManager;
-
-    protected boolean spigotPlatform = false;
 
     protected SignUtil signmanager;
 
@@ -168,8 +165,6 @@ public class Residence extends JavaPlugin {
     protected CMITask DespawnMobsBukkitId = null;
     protected CMITask autosaveBukkitId = null;
 
-    private final boolean SlimeFun = false;
-    private final boolean BigDoors = false;
     Metrics metrics = null;
 
     protected boolean initsuccess = false;
@@ -194,10 +189,6 @@ public class Residence extends JavaPlugin {
     private boolean PlaceholderAPIEnabled = false;
 
     private final String prefix = ChatColor.GREEN + "[" + ChatColor.GOLD + "Residence" + ChatColor.GREEN + "]" + ChatColor.GRAY;
-
-    public boolean isSpigot() {
-        return spigotPlatform;
-    }
 
     public HashMap<String, ClaimedResidence> getTeleportMap() {
         return teleportMap;
@@ -449,17 +440,6 @@ public class Residence extends JavaPlugin {
 
             getFlagUtilManager().load();
 
-            try {
-                Class<?> c = Class.forName("org.bukkit.entity.Player");
-                for (Method one : c.getDeclaredMethods()) {
-                    if (one.getName().equalsIgnoreCase("Spigot")) {
-                        spigotPlatform = true;
-                        break;
-                    }
-                }
-            } catch (Exception e) {
-            }
-
             this.getPermissionManager().startCacheClearScheduler();
 
             imanager = new WorldItemManager(this);
@@ -675,7 +655,6 @@ public class Residence extends JavaPlugin {
         getShopSignUtilManager().LoadSigns();
         getShopSignUtilManager().boardUpdate();
 
-        CMIVersionChecker.VersionCheck(null, 11480, this.getDescription());
         fullyLoaded = true;
     }
 
