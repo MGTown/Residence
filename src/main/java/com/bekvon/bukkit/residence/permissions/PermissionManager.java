@@ -128,12 +128,8 @@ public class PermissionManager {
         PluginManager pluginManager = plugin.getServer().getPluginManager();
         Plugin pl = pluginManager.getPlugin("LuckPerms");
         if (pl != null && pl.isEnabled()) {
-            Integer ver = CMIVersionChecker.convertVersion(pl.getDescription().getVersion());
-            if (ver > 50000) {
-                perms = new LuckPerms5Adapter();
-                Bukkit.getConsoleSender().sendMessage(plugin.getPrefix() + " Found LuckPerms5 Plugin!");
-                return;
-            }
+            perms = new LuckPerms5Adapter();
+            Bukkit.getConsoleSender().sendMessage(plugin.getPrefix() + " Found LuckPerms5 Plugin!");
             plugin.consoleMessage("&cLuckPerms plugin was found but its outdated");
         }
 

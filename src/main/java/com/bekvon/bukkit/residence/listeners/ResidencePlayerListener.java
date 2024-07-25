@@ -936,10 +936,6 @@ public class ResidencePlayerListener implements Listener {
         handleNewLocation(player, player.getLocation(), true);
 
         plugin.getPlayerManager().playerJoin(player);
-
-        if (ResPerm.versioncheck.hasPermission(player)) {
-            CMIVersionChecker.VersionCheck(player, 11480, plugin.getDescription());
-        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
