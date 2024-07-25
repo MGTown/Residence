@@ -46,8 +46,8 @@ public class WorldEdit7SelectionManager extends SelectionManager {
                 sel = wep.getSession(player).getSelection(w);
             if (sel != null) {
                 try {
-                    Location pos1 = new Location(player.getWorld(), sel.getMinimumPoint().getX(), sel.getMinimumPoint().getY(), sel.getMinimumPoint().getZ());
-                    Location pos2 = new Location(player.getWorld(), sel.getMaximumPoint().getX(), sel.getMaximumPoint().getY(), sel.getMaximumPoint().getZ());
+                    Location pos1 = new Location(player.getWorld(), sel.getMinimumPoint().x(), sel.getMinimumPoint().y(), sel.getMinimumPoint().z());
+                    Location pos2 = new Location(player.getWorld(), sel.getMaximumPoint().x(), sel.getMaximumPoint().y(), sel.getMaximumPoint().z());
                     this.updateLocations(player, pos1, pos2);
                 } catch (Exception e) {
                 }

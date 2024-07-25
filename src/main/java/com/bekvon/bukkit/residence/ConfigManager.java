@@ -151,7 +151,6 @@ public class ConfigManager {
     //    protected boolean actionBar;
 //    protected boolean titleMessage;
     protected boolean ActionBarOnSelection;
-    protected boolean visualizer;
     protected int minMoveUpdate;
 
     protected int VoteRangeFrom;
@@ -606,7 +605,7 @@ public class ConfigManager {
 
     public void UpdateConfigFile() {
 
-        String defaultWorldName = Bukkit.getServer().getWorlds().size() > 0 ? Bukkit.getServer().getWorlds().getFirst().getName() : "World";
+        String defaultWorldName = !Bukkit.getServer().getWorlds().isEmpty() ? Bukkit.getServer().getWorlds().getFirst().getName() : "World";
 
         ConfigReader c = null;
         try {
