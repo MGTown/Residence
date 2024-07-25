@@ -22,26 +22,26 @@ public class listall implements cmd {
         World world = null;
 
         c:
-        for (int i = 0; i < args.length; i++) {
+        for (String arg : args) {
             try {
-                page = Integer.parseInt(args[i]);
+                page = Integer.parseInt(arg);
                 if (page < 1)
                     page = 1;
                 continue;
             } catch (Exception ex) {
             }
 
-            if (args[i].equalsIgnoreCase("-a") && !(sender instanceof Player)) {
+            if (arg.equalsIgnoreCase("-a") && !(sender instanceof Player)) {
                 page = -1;
                 continue;
             }
-            if (args[i].equalsIgnoreCase("-f") && !(sender instanceof Player)) {
+            if (arg.equalsIgnoreCase("-f") && !(sender instanceof Player)) {
                 page = -2;
                 continue;
             }
 
             for (World w : Bukkit.getWorlds()) {
-                if (w.getName().equalsIgnoreCase(args[i])) {
+                if (w.getName().equalsIgnoreCase(arg)) {
                     world = w;
                     continue c;
                 }

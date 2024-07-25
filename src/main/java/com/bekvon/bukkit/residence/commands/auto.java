@@ -221,7 +221,7 @@ public class auto implements cmd {
 
         direction dir = direction.Top;
 
-        List<direction> locked = new ArrayList<direction>();
+        List<direction> locked = new ArrayList<>();
 
         boolean checkCollision = plugin.getConfigManager().isARCCheckCollision();
         int skipped = 0;
@@ -364,8 +364,8 @@ public class auto implements cmd {
 
         direction dir = direction.Top;
 
-        List<direction> locked = new ArrayList<direction>();
-        List<direction> permaLocked = new ArrayList<direction>();
+        List<direction> locked = new ArrayList<>();
+        List<direction> permaLocked = new ArrayList<>();
 
         boolean checkCollision = plugin.getConfigManager().isARCCheckCollision();
 
@@ -404,8 +404,8 @@ public class auto implements cmd {
 
         int gap = plugin.getConfigManager().getAntiGreefRangeGaps(cuboid.getWorldName());
 
-        HashMap<direction, Integer> directionMap = new HashMap<direction, Integer>();
-        HashMap<direction, Integer> maxMap = new HashMap<direction, Integer>();
+        HashMap<direction, Integer> directionMap = new HashMap<>();
+        HashMap<direction, Integer> maxMap = new HashMap<>();
         CuboidArea originalCuboid = new CuboidArea(cuboid.getLowLocation(), cuboid.getHighLocation());
 
         int smallestRange = maxX - cuboid.getXSize() < maxY - cuboid.getYSize() ? maxX - cuboid.getXSize() : maxY - cuboid.getYSize();

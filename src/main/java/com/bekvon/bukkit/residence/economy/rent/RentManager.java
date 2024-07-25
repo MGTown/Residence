@@ -28,8 +28,8 @@ public class RentManager implements MarketRentInterface {
 
     public RentManager(Residence plugin) {
         this.plugin = plugin;
-        rentedLand = new HashSet<ClaimedResidence>();
-        rentableLand = new HashSet<ClaimedResidence>();
+        rentedLand = new HashSet<>();
+        rentableLand = new HashSet<>();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class RentManager implements MarketRentInterface {
     }
 
     public List<String> getRentedLands(String playername, boolean onlyHidden) {
-        List<String> rentedLands = new ArrayList<String>();
+        List<String> rentedLands = new ArrayList<>();
         if (playername == null)
             return rentedLands;
         for (ClaimedResidence res : rentedLand) {
@@ -87,7 +87,7 @@ public class RentManager implements MarketRentInterface {
     }
 
     public List<ClaimedResidence> getRents(String playername, boolean onlyHidden, World world) {
-        List<ClaimedResidence> rentedLands = new ArrayList<ClaimedResidence>();
+        List<ClaimedResidence> rentedLands = new ArrayList<>();
         for (ClaimedResidence res : rentedLand) {
             if (res == null)
                 continue;
@@ -113,7 +113,7 @@ public class RentManager implements MarketRentInterface {
     }
 
     public TreeMap<String, ClaimedResidence> getRentsMap(String playername, boolean onlyHidden, World world) {
-        TreeMap<String, ClaimedResidence> rentedLands = new TreeMap<String, ClaimedResidence>();
+        TreeMap<String, ClaimedResidence> rentedLands = new TreeMap<>();
         for (ClaimedResidence res : rentedLand) {
             if (res == null)
                 continue;
@@ -143,7 +143,7 @@ public class RentManager implements MarketRentInterface {
     }
 
     public List<String> getRentedLandsList(String playername) {
-        List<String> rentedLands = new ArrayList<String>();
+        List<String> rentedLands = new ArrayList<>();
         for (ClaimedResidence res : rentedLand) {
             if (res == null)
                 continue;
@@ -605,8 +605,7 @@ public class RentManager implements MarketRentInterface {
 
     @Override
     public void checkCurrentRents() {
-        Set<ClaimedResidence> t = new HashSet<ClaimedResidence>();
-        t.addAll(rentedLand);
+        Set<ClaimedResidence> t = new HashSet<>(rentedLand);
         for (ClaimedResidence res : t) {
 
             if (res == null)
@@ -641,7 +640,7 @@ public class RentManager implements MarketRentInterface {
             }
             if (land.AutoPay && rentable.AllowAutoPay) {
 
-                Double money = 0D;
+                double money = 0D;
                 money += plugin.getEconomyManager().getBalance(land.player);
 
                 if (money < rentable.cost) {
@@ -915,14 +914,14 @@ public class RentManager implements MarketRentInterface {
     }
 
     public Map<String, Object> save() {
-        Map<String, Object> root = new HashMap<String, Object>();
-        Map<String, Object> rentables = new HashMap<String, Object>();
+        Map<String, Object> root = new HashMap<>();
+        Map<String, Object> rentables = new HashMap<>();
         for (ClaimedResidence res : rentableLand) {
             if (res == null || res.getRentable() == null)
                 continue;
             rentables.put(res.getName(), res.getRentable().save());
         }
-        Map<String, Object> rented = new HashMap<String, Object>();
+        Map<String, Object> rented = new HashMap<>();
         for (ClaimedResidence res : rentedLand) {
             if (res == null || res.getRentedLand() == null)
                 continue;

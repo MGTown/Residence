@@ -23,7 +23,7 @@ public class ItemList {
     }
 
     protected ItemList() {
-        list = new ArrayList<Material>();
+        list = new ArrayList<>();
     }
 
     public enum ListType {
@@ -92,8 +92,7 @@ public class ItemList {
     }
 
     protected static ItemList readList(ConfigurationSection node, ItemList list) {
-        ListType type = ListType.valueOf(node.getString("Type", "").toUpperCase());
-        list.type = type;
+        list.type = ListType.valueOf(node.getString("Type", "").toUpperCase());
         List<String> items = node.getStringList("Items");
         if (items != null) {
             for (String item : items) {
@@ -147,11 +146,11 @@ public class ItemList {
     }
 
     public Map<String, Object> save() {
-        Map<String, Object> saveMap = new LinkedHashMap<String, Object>();
+        Map<String, Object> saveMap = new LinkedHashMap<>();
         if (list.isEmpty())
             return saveMap;
         saveMap.put("Type", type.toString());
-        List<String> saveList = new ArrayList<String>();
+        List<String> saveList = new ArrayList<>();
         for (Material mat : list) {
             saveList.add(mat.toString());
         }

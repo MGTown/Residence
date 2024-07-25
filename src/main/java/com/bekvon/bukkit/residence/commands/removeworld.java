@@ -1,7 +1,6 @@
 package com.bekvon.bukkit.residence.commands;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +28,7 @@ public class removeworld implements cmd {
             return false;
         }
 
-        List<String> playerExceptions = new ArrayList<String>();
+        List<String> playerExceptions = new ArrayList<>();
         if (args.length == 2) {
             for (String one : args[1].split(",")) {
                 // Not lowercasing UUID's

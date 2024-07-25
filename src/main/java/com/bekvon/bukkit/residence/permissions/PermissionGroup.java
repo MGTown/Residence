@@ -79,10 +79,10 @@ public class PermissionGroup {
 
     public PermissionGroup(String name) {
         flagPerms = new FlagPermissions();
-        creatorDefaultFlags = new HashMap<String, Boolean>();
+        creatorDefaultFlags = new HashMap<>();
 //	rentedDefaultFlags = new HashMap<String, Boolean>();
-        residenceDefaultFlags = new HashMap<String, Boolean>();
-        groupDefaultFlags = new HashMap<String, Map<String, Boolean>>();
+        residenceDefaultFlags = new HashMap<>();
+        groupDefaultFlags = new HashMap<>();
 
         worldperms = new HashMap<>();
         groupperms = new HashMap<>();
@@ -145,9 +145,9 @@ public class PermissionGroup {
         ymin = ymin > ymax ? ymax : ymin;
 
         if (Residence.getInstance().getConfigManager().isSelectionIgnoreY()) {
-            ymin = CMIWorld.getMinHeight(Bukkit.getWorlds().get(0));
+            ymin = CMIWorld.getMinHeight(Bukkit.getWorlds().getFirst());
             // This needs to be 256 to include entire height where 255 and block 0
-            ymax = CMIWorld.getMaxHeight(Bukkit.getWorlds().get(0));
+            ymax = CMIWorld.getMaxHeight(Bukkit.getWorlds().getFirst());
         }
 
         if (limits.contains("Residence.MaxNorthSouth"))
@@ -160,7 +160,7 @@ public class PermissionGroup {
             minHeight = limits.getInt("Residence.MinHeight", 0);
         // This needs to be 256 to include entire height where 255 and block 0
         if (limits.contains("Residence.MaxHeight"))
-            maxHeight = limits.getInt("Residence.MaxHeight", CMIWorld.getMaxHeight(Bukkit.getWorlds().get(0)));
+            maxHeight = limits.getInt("Residence.MaxHeight", CMIWorld.getMaxHeight(Bukkit.getWorlds().getFirst()));
 
         if (limits.contains("Residence.CanTeleport"))
             tpaccess = limits.getBoolean("Residence.CanTeleport", false);
@@ -246,9 +246,7 @@ public class PermissionGroup {
             flags = node.getKeys(false);
         }
         if (flags != null) {
-            Iterator<String> flagit = flags.iterator();
-            while (flagit.hasNext()) {
-                String flagname = flagit.next();
+            for (String flagname : flags) {
                 boolean access = limits.getBoolean("Flags.Permission." + flagname, false);
                 flagPerms.setFlag(flagname, access ? FlagState.TRUE : FlagState.FALSE);
             }
@@ -258,9 +256,7 @@ public class PermissionGroup {
             flags = node.getKeys(false);
         }
         if (flags != null) {
-            Iterator<String> flagit = flags.iterator();
-            while (flagit.hasNext()) {
-                String flagname = flagit.next();
+            for (String flagname : flags) {
                 boolean access = limits.getBoolean("Flags.CreatorDefault." + flagname, false);
                 creatorDefaultFlags.put(flagname, access);
             }
@@ -290,9 +286,7 @@ public class PermissionGroup {
             flags = node.getKeys(false);
         }
         if (flags != null) {
-            Iterator<String> flagit = flags.iterator();
-            while (flagit.hasNext()) {
-                String flagname = flagit.next();
+            for (String flagname : flags) {
                 boolean access = limits.getBoolean("Flags.Default." + flagname, false);
                 residenceDefaultFlags.put(flagname, access);
             }
@@ -303,14 +297,10 @@ public class PermissionGroup {
             groupDef = node.getKeys(false);
         }
         if (groupDef != null) {
-            Iterator<String> groupit = groupDef.iterator();
-            while (groupit.hasNext()) {
-                String name = groupit.next();
-                Map<String, Boolean> gflags = new HashMap<String, Boolean>();
+            for (String name : groupDef) {
+                Map<String, Boolean> gflags = new HashMap<>();
                 flags = limits.getConfigurationSection("Flags.GroupDefault." + name).getKeys(false);
-                Iterator<String> flagit = flags.iterator();
-                while (flagit.hasNext()) {
-                    String flagname = flagit.next();
+                for (String flagname : flags) {
                     boolean access = limits.getBoolean("Flags.GroupDefault." + name + "." + flagname, false);
                     gflags.put(flagname, access);
                 }

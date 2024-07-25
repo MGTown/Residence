@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creeper;
@@ -58,7 +57,6 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.projectiles.ProjectileSource;
 
-import com.bekvon.bukkit.residence.ConfigManager;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.containers.lm;
@@ -878,8 +876,8 @@ public class ResidenceEntityListener implements Listener {
 
         Entity ent = event.getEntity();
 
-        Boolean cancel = false;
-        Boolean remove = true;
+        boolean cancel = false;
+        boolean remove = true;
         FlagPermissions perms = plugin.getPermsByLoc(loc);
         FlagPermissions world = plugin.getWorldFlags().getPerms(loc.getWorld().getName());
 
@@ -958,7 +956,7 @@ public class ResidenceEntityListener implements Listener {
             return;
         }
 
-        List<Block> preserve = new ArrayList<Block>();
+        List<Block> preserve = new ArrayList<>();
         for (Block block : event.blockList()) {
             FlagPermissions blockperms = plugin.getPermsByLoc(block.getLocation());
 
@@ -1116,7 +1114,7 @@ public class ResidenceEntityListener implements Listener {
 
             if (target.getType() != EntityType.PLAYER)
                 continue;
-            Boolean tgtpvp = plugin.getPermsByLoc(target.getLocation()).has(Flags.pvp, FlagCombo.TrueOrNone);
+            boolean tgtpvp = plugin.getPermsByLoc(target.getLocation()).has(Flags.pvp, FlagCombo.TrueOrNone);
             if (!srcpvp || !tgtpvp) {
                 event.setIntensity(target, 0);
                 continue;
@@ -1187,8 +1185,8 @@ public class ResidenceEntityListener implements Listener {
         if (cause == null)
             return;
 
-        Boolean srcpvp = plugin.getPermsByLoc(cause.getLocation()).has(Flags.pvp, FlagCombo.TrueOrNone);
-        Boolean tgtpvp = plugin.getPermsByLoc(entity.getLocation()).has(Flags.pvp, FlagCombo.TrueOrNone);
+        boolean srcpvp = plugin.getPermsByLoc(cause.getLocation()).has(Flags.pvp, FlagCombo.TrueOrNone);
+        boolean tgtpvp = plugin.getPermsByLoc(entity.getLocation()).has(Flags.pvp, FlagCombo.TrueOrNone);
         if (!srcpvp || !tgtpvp)
             event.setCancelled(true);
     }
@@ -1476,25 +1474,29 @@ public class ResidenceEntityListener implements Listener {
                 .getShooter() instanceof Player))) || damager instanceof Firework) {
 
             Player attacker = null;
-            if (damager instanceof Player) {
-                attacker = (Player) damager;
-            } else if (damager instanceof Projectile project) {
-                if (project.getType() == EntityType.SNOWBALL && srcarea != null) {
-                    isSnowBall = true;
-                    allowSnowBall = srcarea.getPermissions().has(Flags.snowball, FlagCombo.TrueOrNone);
-                }
-                if (project.getFireTicks() > 0)
-                    isOnFire = true;
-
-                attacker = (Player) ((Projectile) damager).getShooter();
-            } else if (damager instanceof Firework) {
-                List<MetadataValue> meta = damager.getMetadata(CrossbowShooter);
-                if (meta != null && !meta.isEmpty()) {
-                    try {
-                        String uid = meta.get(0).asString();
-                        attacker = Bukkit.getPlayer(UUID.fromString(uid));
-                    } catch (Throwable e) {
+            switch (damager) {
+                case Player player -> attacker = player;
+                case Projectile project -> {
+                    if (project.getType() == EntityType.SNOWBALL && srcarea != null) {
+                        isSnowBall = true;
+                        allowSnowBall = srcarea.getPermissions().has(Flags.snowball, FlagCombo.TrueOrNone);
                     }
+                    if (project.getFireTicks() > 0)
+                        isOnFire = true;
+
+                    attacker = (Player) ((Projectile) damager).getShooter();
+                }
+                case Firework firework -> {
+                    List<MetadataValue> meta = damager.getMetadata(CrossbowShooter);
+                    if (meta != null && !meta.isEmpty()) {
+                        try {
+                            String uid = meta.get(0).asString();
+                            attacker = Bukkit.getPlayer(UUID.fromString(uid));
+                        } catch (Throwable e) {
+                        }
+                    }
+                }
+                default -> {
                 }
             }
 
@@ -1573,10 +1575,8 @@ public class ResidenceEntityListener implements Listener {
             if (area != null && ent instanceof Player && damager instanceof Player) {
                 if (area.getPermissions().has(Flags.overridepvp, false) || plugin.getConfigManager().isOverridePvp() && area.getPermissions().has(Flags.pvp,
                         FlagCombo.OnlyFalse)) {
-                    Player player = (Player) ent;
-                    Damageable damage = player;
-                    damage.damage(event.getDamage());
-                    damage.setVelocity(damager.getLocation().getDirection());
+                    ((Player) ent).damage(event.getDamage());
+                    ((Player) ent).setVelocity(damager.getLocation().getDirection());
                     event.setCancelled(true);
                     return;
                 }
@@ -1599,27 +1599,31 @@ public class ResidenceEntityListener implements Listener {
                     .getShooter() instanceof Player))) && event.getCause() != DamageCause.FALL || damager instanceof Firework) {
 
                 Player attacker = null;
-                if (damager instanceof Player) {
-                    attacker = (Player) damager;
-                } else if (damager instanceof Projectile project) {
-                    if (project.getType() == EntityType.SNOWBALL && srcarea != null) {
-                        isSnowBall = true;
-                        allowSnowBall = srcarea.getPermissions().has(Flags.snowball, FlagCombo.TrueOrNone);
-                    }
-                    if (project.getFireTicks() > 0)
-                        isOnFire = true;
-
-                    ProjectileSource shooter = ((Projectile) damager).getShooter();
-                    if (shooter instanceof Player)
-                        attacker = (Player) shooter;
-                } else if (damager instanceof Firework) {
-                    List<MetadataValue> meta = damager.getMetadata(CrossbowShooter);
-                    if (meta != null && !meta.isEmpty()) {
-                        try {
-                            String uid = meta.get(0).asString();
-                            attacker = Bukkit.getPlayer(UUID.fromString(uid));
-                        } catch (Throwable e) {
+                switch (damager) {
+                    case Player player -> attacker = player;
+                    case Projectile project -> {
+                        if (project.getType() == EntityType.SNOWBALL && srcarea != null) {
+                            isSnowBall = true;
+                            allowSnowBall = srcarea.getPermissions().has(Flags.snowball, FlagCombo.TrueOrNone);
                         }
+                        if (project.getFireTicks() > 0)
+                            isOnFire = true;
+
+                        ProjectileSource shooter = ((Projectile) damager).getShooter();
+                        if (shooter instanceof Player)
+                            attacker = (Player) shooter;
+                    }
+                    case Firework firework -> {
+                        List<MetadataValue> meta = damager.getMetadata(CrossbowShooter);
+                        if (meta != null && !meta.isEmpty()) {
+                            try {
+                                String uid = meta.get(0).asString();
+                                attacker = Bukkit.getPlayer(UUID.fromString(uid));
+                            } catch (Throwable e) {
+                            }
+                        }
+                    }
+                    default -> {
                     }
                 }
 

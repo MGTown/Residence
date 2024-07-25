@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 public class MinimizeFlags {
 
-    private Map<String, Boolean> flags = new HashMap<String, Boolean>();
+    private Map<String, Boolean> flags = new HashMap<>();
 
     private int id = 0;
 

@@ -23,14 +23,13 @@ public class limits implements cmd {
 
         if (args.length != 0 && args.length != 1)
             return false;
-        final String[] tempArgs = args;
         OfflinePlayer target;
         boolean rsadm = false;
-        if (tempArgs.length == 0) {
+        if (args.length == 0) {
             target = (Player) sender;
             rsadm = true;
         } else
-            target = plugin.getOfflinePlayer(tempArgs[0]);
+            target = plugin.getOfflinePlayer(args[0]);
         if (target == null)
             return false;
 

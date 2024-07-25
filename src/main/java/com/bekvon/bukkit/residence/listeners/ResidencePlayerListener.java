@@ -104,12 +104,12 @@ public class ResidencePlayerListener implements Listener {
     protected Map<UUID, StuckInfo> stuckTeleportCounter;
     protected int minUpdateTime;
     protected boolean chatenabled;
-    protected Set<UUID> playerToggleChat = new HashSet<UUID>();
+    protected Set<UUID> playerToggleChat = new HashSet<>();
 
     private final Residence plugin;
 
-    protected Map<UUID, Long> lastCheck = new HashMap<UUID, Long>();
-    protected Map<UUID, Vector> lastLocation = new HashMap<UUID, Vector>();
+    protected Map<UUID, Long> lastCheck = new HashMap<>();
+    protected Map<UUID, Vector> lastLocation = new HashMap<>();
 
     private final Runnable locationChangeCheck = () -> {
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -127,10 +127,10 @@ public class ResidencePlayerListener implements Listener {
     };
 
     public ResidencePlayerListener(Residence plugin) {
-        currentRes = new HashMap<UUID, ClaimedResidence>();
-        lastUpdate = new HashMap<UUID, Long>();
-        lastOutsideLoc = new HashMap<UUID, Location>();
-        stuckTeleportCounter = new HashMap<UUID, StuckInfo>();
+        currentRes = new HashMap<>();
+        lastUpdate = new HashMap<>();
+        lastOutsideLoc = new HashMap<>();
+        stuckTeleportCounter = new HashMap<>();
         playerToggleChat.clear();
         minUpdateTime = plugin.getConfigManager().getMinMoveUpdateInterval();
         chatenabled = plugin.getConfigManager().chatEnabled();
@@ -143,10 +143,10 @@ public class ResidencePlayerListener implements Listener {
     }
 
     public void reload() {
-        currentRes = new HashMap<UUID, ClaimedResidence>();
-        lastUpdate = new HashMap<UUID, Long>();
-        lastOutsideLoc = new HashMap<UUID, Location>();
-        stuckTeleportCounter = new HashMap<UUID, StuckInfo>();
+        currentRes = new HashMap<>();
+        lastUpdate = new HashMap<>();
+        lastOutsideLoc = new HashMap<>();
+        stuckTeleportCounter = new HashMap<>();
         playerToggleChat.clear();
         minUpdateTime = plugin.getConfigManager().getMinMoveUpdateInterval();
         chatenabled = plugin.getConfigManager().chatEnabled();
@@ -701,8 +701,8 @@ public class ResidencePlayerListener implements Listener {
             return;
         }
 
-        List<String> w = new ArrayList<String>(res.getCmdWhiteList());
-        List<String> b = new ArrayList<String>(res.getCmdBlackList());
+        List<String> w = new ArrayList<>(res.getCmdWhiteList());
+        List<String> b = new ArrayList<>(res.getCmdBlackList());
 
         if (!areaLimited) {
             w.clear();
@@ -949,7 +949,7 @@ public class ResidencePlayerListener implements Listener {
         if (plugin.isDisabledWorldListener(event.getRespawnLocation().getWorld()))
             return;
         Location loc = event.getRespawnLocation();
-        Boolean bed = event.isBedSpawn();
+        boolean bed = event.isBedSpawn();
         Player player = event.getPlayer();
         if (player.hasMetadata("NPC"))
             return;
@@ -1050,16 +1050,10 @@ public class ResidencePlayerListener implements Listener {
         if (m.isBed())
             return true;
 
-        switch (m) {
-            case LEVER:
-            case PISTON:
-            case STICKY_PISTON:
-            case NOTE_BLOCK:
-            case DRAGON_EGG:
-                return true;
-            default:
-                return Residence.getInstance().getConfigManager().getCustomBothClick().contains(block.getType());
-        }
+        return switch (m) {
+            case LEVER, PISTON, STICKY_PISTON, NOTE_BLOCK, DRAGON_EGG -> true;
+            default -> Residence.getInstance().getConfigManager().getCustomBothClick().contains(block.getType());
+        };
     }
 
     public static boolean isEmptyBlock(Block block) {
@@ -1546,24 +1540,17 @@ public class ResidencePlayerListener implements Listener {
     }
 
     private static boolean canRide(EntityType type) {
-        switch (type.name().toLowerCase()) {
-            case "horse":
-            case "donkey":
-            case "llama":
-            case "pig":
-                return true;
-        }
-        return false;
+        return switch (type.name().toLowerCase()) {
+            case "horse", "donkey", "llama", "pig" -> true;
+            default -> false;
+        };
     }
 
     private static boolean canHaveContainer(EntityType type) {
-        switch (type.name().toLowerCase()) {
-            case "horse":
-            case "donkey":
-            case "llama":
-                return true;
-        }
-        return false;
+        return switch (type.name().toLowerCase()) {
+            case "horse", "donkey", "llama" -> true;
+            default -> false;
+        };
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -2030,7 +2017,7 @@ public class ResidencePlayerListener implements Listener {
                     loc = plugin.getConfigManager().getFlyLandLocation();
                     if (loc == null) {
                         // get main world spawn location in case valid location is not found
-                        loc = Bukkit.getWorlds().get(0).getSpawnLocation();
+                        loc = Bukkit.getWorlds().getFirst().getSpawnLocation();
                     }
                 }
                 if (loc != null) {
@@ -2232,7 +2219,7 @@ public class ResidencePlayerListener implements Listener {
         if (event.getVehicle().getPassenger() == null)
             return;
 
-        List<Entity> ent = new ArrayList<Entity>();
+        List<Entity> ent = new ArrayList<>();
 
         if (Version.isCurrentEqualOrHigher(Version.v1_9_R1))
             ent.addAll(event.getVehicle().getPassengers());
@@ -2494,7 +2481,7 @@ public class ResidencePlayerListener implements Listener {
         return true;
     }
 
-    HashMap<UUID, Long> informar = new HashMap<UUID, Long>();
+    HashMap<UUID, Long> informar = new HashMap<>();
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onResidenceChangeMessagePrint(ResidenceChangedEvent event) {
@@ -2614,9 +2601,8 @@ public class ResidencePlayerListener implements Listener {
                 if (!res.getPermissions().has(Flags.healing, false))
                     continue;
 
-                Damageable damage = player;
-                double health = damage.getHealth();
-                if (health < damage.getMaxHealth() && !player.isDead()) {
+                double health = player.getHealth();
+                if (health < player.getMaxHealth() && !player.isDead()) {
                     player.setHealth(health + 1);
                 }
             }
@@ -2674,7 +2660,7 @@ public class ResidencePlayerListener implements Listener {
 
         try {
 
-            Set<ClaimedResidence> residences = new HashSet<ClaimedResidence>();
+            Set<ClaimedResidence> residences = new HashSet<>();
 
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                 ClaimedResidence res = getCurrentResidence(player.getUniqueId());
@@ -2693,7 +2679,7 @@ public class ResidencePlayerListener implements Listener {
             }
 
             for (ClaimedResidence res : residences) {
-                Set<Entity> entities = new HashSet<Entity>();
+                Set<Entity> entities = new HashSet<>();
 
                 World world = Bukkit.getWorld(res.getWorld());
 

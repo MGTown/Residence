@@ -23,12 +23,12 @@ public class FileCleanUp {
 
     public void cleanOldResidence() {
 
-        Map<String, ClaimedResidence> resNameList = new HashMap<String, ClaimedResidence>(plugin.getResidenceManager().getResidences());
+        Map<String, ClaimedResidence> resNameList = new HashMap<>(plugin.getResidenceManager().getResidences());
         int i = 0;
 
         OfflinePlayer[] offplayer = Bukkit.getOfflinePlayers();
 
-        HashMap<UUID, OfflinePlayer> playerMapUUID = new HashMap<UUID, OfflinePlayer>();
+        HashMap<UUID, OfflinePlayer> playerMapUUID = new HashMap<>();
 
         boolean lp = plugin.getPermissionManager().getPermissionsPlugin() instanceof LuckPerms5Adapter;
 

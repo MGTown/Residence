@@ -24,7 +24,7 @@ import com.bekvon.bukkit.residence.protection.FlagPermissions.FlagState;
 
 public class ShopListener implements Listener {
 
-    public static List<String> Delete = new ArrayList<String>();
+    public static List<String> Delete = new ArrayList<>();
     private final Residence plugin;
 
     public ShopListener(Residence residence) {

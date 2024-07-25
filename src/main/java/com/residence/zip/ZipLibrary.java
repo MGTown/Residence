@@ -25,8 +25,8 @@ public class ZipLibrary {
     }
 
     private void cleanFiles() {
-        Long x = plugin.getConfigManager().BackupAutoCleanUpDays() * 60L * 1000L * 24L * 60L;
-        Long time = System.currentTimeMillis();
+        long x = plugin.getConfigManager().BackupAutoCleanUpDays() * 60L * 1000L * 24L * 60L;
+        long time = System.currentTimeMillis();
         for (File file : BackupDir.listFiles()) {
             long diff = time - file.lastModified();
             if (diff > x) {
@@ -51,7 +51,7 @@ public class ZipLibrary {
         File fileZip = new File(BackupDir, dateFormat.format(date) + ".zip");
 
         // Create the Source List, and add directories/etc to the file.
-        List<File> sources = new ArrayList<File>();
+        List<File> sources = new ArrayList<>();
 
         File saveFolder = new File(plugin.getDataLocation(), "Save");
         File worldFolder = new File(saveFolder, "Worlds");

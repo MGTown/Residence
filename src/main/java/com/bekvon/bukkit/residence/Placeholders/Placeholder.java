@@ -23,7 +23,6 @@ import com.bekvon.bukkit.residence.utils.GetTime;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.Zrips.CMILib.Chat.ChatFilterRule;
-import net.Zrips.CMILib.Logs.CMIDebug;
 
 public class Placeholder {
 
@@ -35,8 +34,8 @@ public class Placeholder {
 
     private static final ChatFilterRule numericalRule = new ChatFilterRule().setPattern("(\\$)(\\d)");
 
-    static LinkedHashMap<String, CMIPlaceHolders> byNameStatic = new LinkedHashMap<String, CMIPlaceHolders>();
-    static LinkedHashMap<String, LinkedHashSet<CMIPlaceHolders>> byNameComplex = new LinkedHashMap<String, LinkedHashSet<CMIPlaceHolders>>();
+    static LinkedHashMap<String, CMIPlaceHolders> byNameStatic = new LinkedHashMap<>();
+    static LinkedHashMap<String, LinkedHashSet<CMIPlaceHolders>> byNameComplex = new LinkedHashMap<>();
 
     public enum CMIPlaceHolders {
         residence_user_amount,
@@ -76,14 +75,14 @@ public class Placeholder {
                 }
                 String[] split = fullName.split("_");
                 String first = split[0] + "_" + split[1];
-                LinkedHashSet<CMIPlaceHolders> old = byNameComplex.getOrDefault(first, new LinkedHashSet<CMIPlaceHolders>());
+                LinkedHashSet<CMIPlaceHolders> old = byNameComplex.getOrDefault(first, new LinkedHashSet<>());
                 old.add(one);
                 byNameComplex.put(first, old);
             }
         }
 
         private String[] vars;
-        private final List<Integer> groups = new ArrayList<Integer>();
+        private final List<Integer> groups = new ArrayList<>();
         private ChatFilterRule rule = null;
         private boolean cache = true;
         private String desc = null;
@@ -91,7 +90,7 @@ public class Placeholder {
         private final int cacheForMS = 1000;
 
         private final int MAX_ENTRIES = 20;
-        LinkedHashMap<UUID, CMIPlaceholderCache> map = new LinkedHashMap<UUID, CMIPlaceholderCache>(MAX_ENTRIES + 1, .75F, false) {
+        LinkedHashMap<UUID, CMIPlaceholderCache> map = new LinkedHashMap<>(MAX_ENTRIES + 1, .75F, false) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<UUID, CMIPlaceholderCache> eldest) {
                 return size() > MAX_ENTRIES;
@@ -204,7 +203,7 @@ public class Placeholder {
         }
 
         public List<String> getComplexRegexMatchers(String text) {
-            List<String> lsInLs = new ArrayList<String>();
+            List<String> lsInLs = new ArrayList<>();
             if (!this.isComplex())
                 return lsInLs;
 
@@ -222,7 +221,7 @@ public class Placeholder {
 
         public List<String> getComplexValues(String text) {
 
-            List<String> lsInLs = new ArrayList<String>();
+            List<String> lsInLs = new ArrayList<>();
             if (!this.isComplex() || text == null)
                 return lsInLs;
 
@@ -302,7 +301,7 @@ public class Placeholder {
     }
 
     public List<String> updatePlaceHolders(Player player, List<String> messages) {
-        List<String> ms = new ArrayList<String>(messages);
+        List<String> ms = new ArrayList<>(messages);
         for (int i = 0, l = messages.size(); i < l; ++i) {
             ms.set(i, updatePlaceHolders(player, messages.get(i)));
         }
@@ -477,18 +476,17 @@ public class Placeholder {
                 }
             } else {
                 if (value != null && player != null) {
-                    switch (placeHolder) {
-                        case residence_user_current_flag_$1:
-                            List<String> values = placeHolder.getComplexValues(value);
-                            if (values.size() < 1)
-                                return "";
-                            ClaimedResidence res = plugin.getResidenceManager().getByLoc(user.getPlayer().getLocation());
-                            if (res == null)
-                                return null;
-                            Flags flag = Flags.getFlag(values.get(0));
-                            if (flag == null)
-                                return "";
-                            return variable(res.getPermissions().playerHas(player, flag, FlagCombo.TrueOrNone));
+                    if (placeHolder == CMIPlaceHolders.residence_user_current_flag_$1) {
+                        List<String> values = placeHolder.getComplexValues(value);
+                        if (values.size() < 1)
+                            return "";
+                        ClaimedResidence res = plugin.getResidenceManager().getByLoc(user.getPlayer().getLocation());
+                        if (res == null)
+                            return null;
+                        Flags flag = Flags.getFlag(values.getFirst());
+                        if (flag == null)
+                            return "";
+                        return variable(res.getPermissions().playerHas(player, flag, FlagCombo.TrueOrNone));
                     }
                 }
             }

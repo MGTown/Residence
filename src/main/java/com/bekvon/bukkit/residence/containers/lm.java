@@ -406,7 +406,7 @@ public enum lm {
 
     Gui_Set_Title("&8%1 flags"),
     Gui_Pset_Title("&8%1 &7%2 &6flags"),
-    Gui_Actions(new ArrayList<String>(Arrays.asList("&2Left click to enable", "&cRight click to disable", "&eShift + left click to remove"))),
+    Gui_Actions(new ArrayList<>(Arrays.asList("&2Left click to enable", "&cRight click to disable", "&eShift + left click to remove"))),
 
     InformationPage_Top("&e___/ &a %1 - %2 &e \\___"),
     InformationPage_TopSingle("&e___/ &a %1 &e \\___"),

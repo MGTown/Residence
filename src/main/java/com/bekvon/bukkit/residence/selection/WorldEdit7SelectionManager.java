@@ -27,7 +27,6 @@ import com.sk89q.worldedit.regions.selector.CuboidRegionSelector;
 import com.sk89q.worldedit.regions.selector.limit.PermissiveSelectorLimits;
 import com.sk89q.worldedit.world.World;
 
-import net.Zrips.CMILib.Logs.CMIDebug;
 import net.Zrips.CMILib.Version.Schedulers.CMIScheduler;
 import net.Zrips.CMILib.Version.Schedulers.CMITask;
 
@@ -134,7 +133,7 @@ public class WorldEdit7SelectionManager extends SelectionManager {
         this.worldEditUpdate(player);
     }
 
-    Set<CuboidArea> queue = new HashSet<CuboidArea>();
+    Set<CuboidArea> queue = new HashSet<>();
     CMITask task = null;
 
     @Override

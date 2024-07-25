@@ -8,14 +8,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -40,7 +38,6 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.world.PortalCreateEvent;
@@ -50,7 +47,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
-import com.bekvon.bukkit.residence.ConfigManager;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.commands.auto.direction;
 import com.bekvon.bukkit.residence.containers.Flags;
@@ -68,17 +64,14 @@ import net.Zrips.CMILib.ActionBar.CMIActionBar;
 import net.Zrips.CMILib.Container.CMIBlock;
 import net.Zrips.CMILib.Container.CMIWorld;
 import net.Zrips.CMILib.Items.CMIMaterial;
-import net.Zrips.CMILib.Logs.CMIDebug;
 import net.Zrips.CMILib.Version.Version;
-import net.Zrips.CMILib.Version.Schedulers.CMIScheduler;
-import net.Zrips.CMILib.Version.Teleporters.CMITeleporter;
 
 public class ResidenceBlockListener implements Listener {
 
-    private final List<String> MessageInformed = new ArrayList<String>();
+    private final List<String> MessageInformed = new ArrayList<>();
 
-    private final Set<UUID> ResCreated = new HashSet<UUID>();
-    public static Set<UUID> newPlayers = new HashSet<UUID>();
+    private final Set<UUID> ResCreated = new HashSet<>();
+    public static Set<UUID> newPlayers = new HashSet<>();
 
     private final Residence plugin;
 
@@ -192,7 +185,7 @@ public class ResidenceBlockListener implements Listener {
         ClaimedResidence startRes = plugin.getResidenceManager().getByLoc(event.getLocation());
         List<BlockState> blocks = event.getBlocks();
 
-        for (BlockState one : new ArrayList<BlockState>(blocks)) {
+        for (BlockState one : new ArrayList<>(blocks)) {
             ClaimedResidence targetRes = plugin.getResidenceManager().getByLoc(one.getLocation());
             if (startRes == null && targetRes != null || targetRes != null && startRes != null && !startRes.getName().equals(targetRes.getName()) && !startRes.isOwner(targetRes.getOwner())) {
                 blocks.remove(one);
@@ -351,7 +344,7 @@ public class ResidenceBlockListener implements Listener {
 
             String saved = "NULL";
             if (ent.hasMetadata(SourceResidenceName))
-                saved = ent.getMetadata(SourceResidenceName).get(0).asString();
+                saved = ent.getMetadata(SourceResidenceName).getFirst().asString();
 
             if (res != null && !saved.equalsIgnoreCase(resName)) {
                 event.setCancelled(true);
@@ -432,7 +425,7 @@ public class ResidenceBlockListener implements Listener {
         return res != null && !res.equals(orRes) && !res.isOwner(player) && !res.isTrusted(player);
     }
 
-    private static final List<Vector> chestVectors = new ArrayList<Vector>(Arrays.asList(
+    private static final List<Vector> chestVectors = new ArrayList<>(Arrays.asList(
             new Vector(0, 0, -1),
             new Vector(0, 0, 1),
             new Vector(1, 0, 0),
@@ -523,7 +516,7 @@ public class ResidenceBlockListener implements Listener {
 
         direction dir = direction.Top;
 
-        List<direction> locked = new ArrayList<direction>();
+        List<direction> locked = new ArrayList<>();
 
         boolean checkCollision = plugin.getConfigManager().isARCCheckCollision();
         int skipped = 0;
@@ -1027,7 +1020,7 @@ public class ResidenceBlockListener implements Listener {
 
     @SuppressWarnings("unchecked")
     private static ArrayList<Vector> getNetherPortalCorners(PortalCreateEvent e) {
-        ArrayList<Vector> locs = new ArrayList<Vector>();
+        ArrayList<Vector> locs = new ArrayList<>();
 
         List<?> ls = new ArrayList<>();
         try {
@@ -1047,9 +1040,7 @@ public class ResidenceBlockListener implements Listener {
         int bigestX = -Integer.MAX_VALUE;
         int bigestZ = -Integer.MAX_VALUE;
 
-        for (int i = 0; i < ls.size(); i++) {
-            Object ob = ls.get(i);
-
+        for (Object ob : ls) {
             Location one = Version.isCurrentEqualOrHigher(Version.v1_14_R1) ? ((BlockState) ob).getLocation() : ((Block) ob).getLocation();
 
             if (one.getBlockY() < lowestY)

@@ -33,7 +33,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.scheduler.BukkitTask;
 
 import net.Zrips.CMILib.Version.Schedulers.CMIScheduler;
 import net.Zrips.CMILib.Version.Schedulers.CMITask;
@@ -96,7 +95,7 @@ public class Metrics {
     /**
      * All of the custom graphs to submit to metrics
      */
-    private final Set<Graph> graphs = Collections.synchronizedSet(new HashSet<Graph>());
+    private final Set<Graph> graphs = Collections.synchronizedSet(new HashSet<>());
     /**
      * The default graph, used for addCustomData when you don't want a specific graph
      */
@@ -254,12 +253,7 @@ public class Metrics {
             try {
                 // Reload the metrics file
                 configuration.load(getConfigFile());
-            } catch (IOException ex) {
-                if (debug) {
-                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
-                }
-                return true;
-            } catch (InvalidConfigurationException ex) {
+            } catch (IOException | InvalidConfigurationException ex) {
                 if (debug) {
                     Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
                 }
@@ -384,11 +378,8 @@ public class Metrics {
         // Acquire a lock on the graphs, which lets us make the assumption we also lock everything
         // inside of the graph (e.g plotters)
         synchronized (graphs) {
-            final Iterator<Graph> iter = graphs.iterator();
 
-            while (iter.hasNext()) {
-                final Graph graph = iter.next();
-
+            for (Graph graph : graphs) {
                 for (Plotter plotter : graph.getPlotters()) {
                     // The key name to send to the metrics server
                     // The format is C-GRAPHNAME-PLOTTERNAME where separator - is defined at the top
@@ -440,11 +431,8 @@ public class Metrics {
         // Is this the first update this hour?
         if (response.contains("OK This is your first update this hour")) {
             synchronized (graphs) {
-                final Iterator<Graph> iter = graphs.iterator();
 
-                while (iter.hasNext()) {
-                    final Graph graph = iter.next();
-
+                for (Graph graph : graphs) {
                     for (Plotter plotter : graph.getPlotters()) {
                         plotter.reset();
                     }
@@ -507,7 +495,7 @@ public class Metrics {
         /**
          * The set of plotters that are contained within this graph
          */
-        private final Set<Plotter> plotters = new LinkedHashSet<Plotter>();
+        private final Set<Plotter> plotters = new LinkedHashSet<>();
 
         private Graph(final String name) {
             this.name = name;

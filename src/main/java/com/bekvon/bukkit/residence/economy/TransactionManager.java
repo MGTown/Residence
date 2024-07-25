@@ -23,7 +23,7 @@ public class TransactionManager implements MarketBuyInterface {
 
     public TransactionManager(Residence plugin) {
         this.plugin = plugin;
-        sellAmount = new HashSet<ClaimedResidence>();
+        sellAmount = new HashSet<>();
     }
 
     public boolean chargeEconomyMoney(Player player, double chargeamount) {
@@ -334,7 +334,7 @@ public class TransactionManager implements MarketBuyInterface {
     }
 
     public void printForSaleResidences(Player player, int page) {
-        List<ClaimedResidence> toRemove = new ArrayList<ClaimedResidence>();
+        List<ClaimedResidence> toRemove = new ArrayList<>();
         plugin.msg(player, lm.Economy_LandForSale);
         StringBuilder sbuild = new StringBuilder();
         sbuild.append(ChatColor.GREEN);
@@ -399,7 +399,7 @@ public class TransactionManager implements MarketBuyInterface {
 
     @Override
     public Map<String, Integer> getBuyableResidences() {
-        Map<String, Integer> list = new HashMap<String, Integer>();
+        Map<String, Integer> list = new HashMap<>();
         for (ClaimedResidence res : sellAmount) {
             if (res == null)
                 continue;

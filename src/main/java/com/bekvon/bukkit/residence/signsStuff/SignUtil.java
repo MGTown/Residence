@@ -5,14 +5,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentHashMap.KeySetView;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,8 +45,7 @@ public class SignUtil {
     }
 
     public int updateAllSigns() {
-        ConcurrentHashMap<String, Signs> temp = new ConcurrentHashMap<String, Signs>();
-        temp.putAll(Signs.GetAllSigns());
+        ConcurrentHashMap<String, Signs> temp = new ConcurrentHashMap<>(Signs.GetAllSigns());
         for (Entry<String, Signs> one : temp.entrySet()) {
             SignUpdate(one.getValue());
         }
@@ -68,7 +64,7 @@ public class SignUtil {
             return;
 
         ConfigurationSection ConfCategory = f.getConfigurationSection("Signs");
-        ArrayList<String> categoriesList = new ArrayList<String>(ConfCategory.getKeys(false));
+        ArrayList<String> categoriesList = new ArrayList<>(ConfCategory.getKeys(false));
         if (categoriesList.size() == 0)
             return;
         for (String category : categoriesList) {
@@ -115,7 +111,7 @@ public class SignUtil {
             conf.createSection("Signs");
 
         int i = 0;
-        for (Entry<String, Signs> one : new ConcurrentHashMap<String, Signs>(Signs.GetAllSigns()).entrySet()) {
+        for (Entry<String, Signs> one : new ConcurrentHashMap<>(Signs.GetAllSigns()).entrySet()) {
             Signs s = one.getValue();
             ++i;
             String path = "Signs." + i;
@@ -235,9 +231,8 @@ public class SignUtil {
                 formatter.setTimeZone(TimeZone.getTimeZone(plugin.getConfigManager().getTimeZone()));
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(time);
-                String timeString = formatter.format(calendar.getTime());
 
-                String endDate = timeString;
+                String endDate = formatter.format(calendar.getTime());
                 if (time == 0L)
                     endDate = "Unknown";
 
@@ -320,7 +315,7 @@ public class SignUtil {
             if (loc.size() != 4)
                 continue;
 
-            World world = Bukkit.getWorld(loc.get(0));
+            World world = Bukkit.getWorld(loc.getFirst());
             if (world == null)
                 continue;
 
@@ -365,8 +360,8 @@ public class SignUtil {
         else if (name.length() > 15 && name.contains(".")) {
             String[] splited = name.split("\\.");
             name = "";
-            for (int i = 0; i < splited.length; i++) {
-                String tempName = name + "." + splited[i];
+            for (String s : splited) {
+                String tempName = name + "." + s;
                 if (tempName.length() < 15)
                     name = tempName;
                 else
@@ -384,8 +379,8 @@ public class SignUtil {
         else if (FirstLine.length() > 15 && FirstLine.contains(".")) {
             String[] splited = FirstLine.split("\\.");
             FirstLine = "";
-            for (int i = 0; i < splited.length; i++) {
-                String tempName = FirstLine + "." + splited[i];
+            for (String s : splited) {
+                String tempName = FirstLine + "." + s;
                 if (tempName.length() < 15)
                     FirstLine = tempName;
                 else

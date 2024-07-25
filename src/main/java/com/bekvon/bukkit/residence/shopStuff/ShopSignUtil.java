@@ -29,7 +29,7 @@ import net.Zrips.CMILib.Version.Schedulers.CMIScheduler;
 
 public class ShopSignUtil {
 
-    List<Board> AllBoards = new ArrayList<Board>();
+    List<Board> AllBoards = new ArrayList<>();
 
     private final Residence plugin;
 
@@ -84,13 +84,13 @@ public class ShopSignUtil {
             return;
 
         ConfigurationSection ConfCategory = f.getConfigurationSection("ShopVotes");
-        ArrayList<String> categoriesList = new ArrayList<String>(ConfCategory.getKeys(false));
+        ArrayList<String> categoriesList = new ArrayList<>(ConfCategory.getKeys(false));
         if (categoriesList.size() == 0)
             return;
 
         for (String category : categoriesList) {
             List<String> List = ConfCategory.getStringList(category);
-            List<ShopVote> VoteList = new ArrayList<ShopVote>();
+            List<ShopVote> VoteList = new ArrayList<>();
             for (String oneEntry : List) {
                 if (!oneEntry.contains("%"))
                     continue;
@@ -164,7 +164,7 @@ public class ShopSignUtil {
 
             String path = "ShopVotes." + res.getName().replace(".", "_");
 
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
 
             for (ShopVote oneVote : res.GetShopVotes()) {
                 list.add(oneVote.getName() + ":" + oneVote.getUuid().toString() + "%" + oneVote.getVote() + "!" + oneVote.getTime());
@@ -225,7 +225,7 @@ public class ShopSignUtil {
 
     public Map<String, Double> getSortedShopList() {
 
-        Map<String, Double> allvotes = new HashMap<String, Double>();
+        Map<String, Double> allvotes = new HashMap<>();
 
         List<ClaimedResidence> shops = plugin.getResidenceManager().getShops();
 
@@ -243,17 +243,11 @@ public class ShopSignUtil {
 
     private static Map<String, Double> sortByComparator(Map<String, Double> allvotes) {
 
-        List<Map.Entry<String, Double>> list = new LinkedList<Map.Entry<String, Double>>(allvotes.entrySet());
+        List<Map.Entry<String, Double>> list = new LinkedList<>(allvotes.entrySet());
 
-        Collections.sort(list, new Comparator<Map.Entry<String, Double>>() {
-            @Override
-            public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) {
-                return (o2.getValue()).compareTo(o1.getValue());
-            }
-        });
-        Map<String, Double> sortedMap = new LinkedHashMap<String, Double>();
-        for (Iterator<Map.Entry<String, Double>> it = list.iterator(); it.hasNext(); ) {
-            Map.Entry<String, Double> entry = it.next();
+        list.sort((o1, o2) -> (o2.getValue()).compareTo(o1.getValue()));
+        Map<String, Double> sortedMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Double> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
         return sortedMap;
@@ -269,7 +263,7 @@ public class ShopSignUtil {
             return;
 
         ConfigurationSection ConfCategory = f.getConfigurationSection("ShopSigns");
-        ArrayList<String> categoriesList = new ArrayList<String>(ConfCategory.getKeys(false));
+        ArrayList<String> categoriesList = new ArrayList<>(ConfCategory.getKeys(false));
         if (categoriesList.size() == 0)
             return;
         for (String category : categoriesList) {
@@ -327,7 +321,7 @@ public class ShopSignUtil {
     }
 
     public boolean boardUpdateDelayed() {
-        CMIScheduler.runTaskLater(() -> boardUpdate(), 20L);
+        CMIScheduler.runTaskLater(this::boardUpdate, 20L);
         return true;
     }
 
@@ -336,7 +330,7 @@ public class ShopSignUtil {
             board.clearSignLoc();
             List<Location> SignsLocation = board.GetLocations();
 
-            ArrayList<String> ShopNames = new ArrayList<String>(getSortedShopList().keySet());
+            ArrayList<String> ShopNames = new ArrayList<>(getSortedShopList().keySet());
 
             int Start = board.GetStartPlace();
             for (Location OneSignLoc : SignsLocation) {

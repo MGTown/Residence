@@ -1,12 +1,7 @@
 package com.bekvon.bukkit.residence.protection;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -89,33 +84,23 @@ public class ResidencePermissions extends FlagPermissions {
     }
 
     public boolean playerHas(Player player, Flags flag, FlagCombo f) {
-        switch (f) {
-            case FalseOrNone:
-                return !this.playerHas(player, world, flag, false);
-            case OnlyFalse:
-                return !this.playerHas(player, world, flag, true);
-            case OnlyTrue:
-                return this.playerHas(player, world, flag, false);
-            case TrueOrNone:
-                return this.playerHas(player, world, flag, true);
-            default:
-                return false;
-        }
+        return switch (f) {
+            case FalseOrNone -> !this.playerHas(player, world, flag, false);
+            case OnlyFalse -> !this.playerHas(player, world, flag, true);
+            case OnlyTrue -> this.playerHas(player, world, flag, false);
+            case TrueOrNone -> this.playerHas(player, world, flag, true);
+            default -> false;
+        };
     }
 
     public boolean playerHas(ResidencePlayer player, Flags flag, FlagCombo f) {
-        switch (f) {
-            case FalseOrNone:
-                return !this.playerHas(player, flag, false);
-            case OnlyFalse:
-                return !this.playerHas(player, flag, true);
-            case OnlyTrue:
-                return this.playerHas(player, flag, false);
-            case TrueOrNone:
-                return this.playerHas(player, flag, true);
-            default:
-                return false;
-        }
+        return switch (f) {
+            case FalseOrNone -> !this.playerHas(player, flag, false);
+            case OnlyFalse -> !this.playerHas(player, flag, true);
+            case OnlyTrue -> this.playerHas(player, flag, false);
+            case TrueOrNone -> this.playerHas(player, flag, true);
+            default -> false;
+        };
     }
 
     @Override
@@ -133,18 +118,13 @@ public class ResidencePermissions extends FlagPermissions {
 
     @Deprecated
     public boolean playerHas(String player, String flag, FlagCombo f) {
-        switch (f) {
-            case FalseOrNone:
-                return !this.playerHas(player, world, flag, false);
-            case OnlyFalse:
-                return !this.playerHas(player, world, flag, true);
-            case OnlyTrue:
-                return this.playerHas(player, world, flag, false);
-            case TrueOrNone:
-                return this.playerHas(player, world, flag, true);
-            default:
-                return false;
-        }
+        return switch (f) {
+            case FalseOrNone -> !this.playerHas(player, world, flag, false);
+            case OnlyFalse -> !this.playerHas(player, world, flag, true);
+            case OnlyTrue -> this.playerHas(player, world, flag, false);
+            case TrueOrNone -> this.playerHas(player, world, flag, true);
+            default -> false;
+        };
     }
 
     @Override
@@ -191,18 +171,13 @@ public class ResidencePermissions extends FlagPermissions {
     }
 
     public boolean has(Flags flag, FlagCombo f, boolean checkParent) {
-        switch (f) {
-            case FalseOrNone:
-                return !has(flag, false, checkParent);
-            case OnlyFalse:
-                return !has(flag, true, checkParent);
-            case OnlyTrue:
-                return has(flag, false, checkParent);
-            case TrueOrNone:
-                return has(flag, true, checkParent);
-            default:
-                return false;
-        }
+        return switch (f) {
+            case FalseOrNone -> !has(flag, false, checkParent);
+            case OnlyFalse -> !has(flag, true, checkParent);
+            case OnlyTrue -> has(flag, false, checkParent);
+            case TrueOrNone -> has(flag, true, checkParent);
+            default -> false;
+        };
     }
 
     @Deprecated
@@ -212,18 +187,13 @@ public class ResidencePermissions extends FlagPermissions {
 
     @Deprecated
     public boolean has(String flag, FlagCombo f, boolean checkParent) {
-        switch (f) {
-            case FalseOrNone:
-                return !has(flag, false, checkParent);
-            case OnlyFalse:
-                return !has(flag, true, checkParent);
-            case OnlyTrue:
-                return has(flag, false, checkParent);
-            case TrueOrNone:
-                return has(flag, true, checkParent);
-            default:
-                return false;
-        }
+        return switch (f) {
+            case FalseOrNone -> !has(flag, false, checkParent);
+            case OnlyFalse -> !has(flag, true, checkParent);
+            case OnlyTrue -> has(flag, false, checkParent);
+            case TrueOrNone -> has(flag, true, checkParent);
+            default -> false;
+        };
     }
 
     @Override
@@ -293,7 +263,7 @@ public class ResidencePermissions extends FlagPermissions {
             for (Entry<String, Boolean> flag : glists.getValue().entrySet()) {
                 if (group.hasFlagAccess(flag.getKey()) || resadmin) {
                     if (!this.groupFlags.containsKey(glists.getKey()))
-                        this.groupFlags.put(glists.getKey(), Collections.synchronizedMap(new HashMap<String, Boolean>()));
+                        this.groupFlags.put(glists.getKey(), Collections.synchronizedMap(new HashMap<>()));
                     this.groupFlags.get(glists.getKey()).put(flag.getKey(), flag.getValue());
                 } else {
                     if (player != null)
@@ -489,7 +459,7 @@ public class ResidencePermissions extends FlagPermissions {
                     continue;
 
                 ArrayList<Player> players = this.residence.getPlayersInResidence();
-                if (!resadmin && (players.size() > 1 || players.size() == 1 && !players.get(0).getName().equals(this.getOwner()))) {
+                if (!resadmin && (players.size() > 1 || players.size() == 1 && !players.getFirst().getName().equals(this.getOwner()))) {
                     int size = 0;
                     for (Player one : players) {
                         if (!one.getName().equals(this.getOwner()))
@@ -682,10 +652,8 @@ public class ResidencePermissions extends FlagPermissions {
             ownerUUID = UUID.fromString(Residence.getInstance().getServerLandUUID());// the UUID for server owned land
         } else {
             UUID playerUUID = Residence.getInstance().getPlayerUUID(ownerLastKnownName);
-            if (playerUUID != null)
-                ownerUUID = playerUUID;
-            else
-                ownerUUID = UUID.fromString(Residence.getInstance().getTempUserUUID());//the fake UUID used when unable to find the real one, will be updated with players real UUID when its possible to find it
+            //the fake UUID used when unable to find the real one, will be updated with players real UUID when its possible to find it
+            ownerUUID = Objects.requireNonNullElseGet(playerUUID, () -> UUID.fromString(Residence.getInstance().getTempUserUUID()));
         }
         Residence.getInstance().getPlayerManager().addResidence(ownerLastKnownName, residence);
         if (resetFlags)

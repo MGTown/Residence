@@ -28,7 +28,7 @@ public class LeaseManager {
     public LeaseManager(Residence plugin) {
         this.plugin = plugin;
         manager = plugin.getResidenceManager();
-        leaseExpireTime = new HashSet<ClaimedResidence>();
+        leaseExpireTime = new HashSet<>();
     }
 
     @Deprecated
@@ -189,7 +189,7 @@ public class LeaseManager {
 
     public void doExpirations() {
 
-        Set<ClaimedResidence> t = new HashSet<ClaimedResidence>(leaseExpireTime);
+        Set<ClaimedResidence> t = new HashSet<>(leaseExpireTime);
 
         for (ClaimedResidence res : t) {
             if (res == null) {
@@ -257,7 +257,7 @@ public class LeaseManager {
     }
 
     public Map<String, Long> save() {
-        Map<String, Long> m = new HashMap<String, Long>();
+        Map<String, Long> m = new HashMap<>();
         for (ClaimedResidence one : leaseExpireTime) {
             m.put(one.getName(), one.getLeaseExpireTime());
         }
@@ -276,9 +276,7 @@ public class LeaseManager {
             }
         }
 
-        Map<String, Long> m = root;
-
-        for (Entry<String, Long> one : m.entrySet()) {
+        for (Entry<String, Long> one : ((Map<String, Long>) root).entrySet()) {
             ClaimedResidence res = plugin.getResidenceManager().getByName(one.getKey());
             if (res == null)
                 continue;

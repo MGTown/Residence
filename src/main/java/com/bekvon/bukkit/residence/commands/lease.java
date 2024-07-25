@@ -25,139 +25,141 @@ public class lease implements cmd {
 
         if (args.length == 1 || args.length == 2 || args.length == 3) {
 
-            if (args[0].equals("set")) {
-                if (!resadmin) {
-                    plugin.msg(player, lm.General_NoPermission);
-                    return true;
-                }
-                if (args[2].equals("infinite")) {
-                    if (plugin.getLeaseManager().isLeased(plugin.getResidenceManager().getByName(args[1]))) {
-                        plugin.getLeaseManager().removeExpireTime(plugin.getResidenceManager().getByName(args[1]));
-                        plugin.msg(player, lm.Economy_LeaseInfinite);
-                    } else {
-                        plugin.msg(player, lm.Economy_LeaseNotExpire);
-                    }
-                    return true;
-                }
-                int days;
-                try {
-                    days = Integer.parseInt(args[2]);
-                } catch (Exception ex) {
-                    plugin.msg(player, lm.Invalid_Days);
-                    return true;
-                }
-                plugin.getLeaseManager().setExpireTime(player, plugin.getResidenceManager().getByName(args[1]), days);
-                return true;
-            }
-            if (args[0].equals("expires")) {
-                ClaimedResidence res = null;
-                if (args.length == 1) {
-                    res = plugin.getResidenceManager().getByLoc(player.getLocation());
-                    if (res == null) {
-                        plugin.msg(player, lm.Residence_NotIn);
+            switch (args[0]) {
+                case "set" -> {
+                    if (!resadmin) {
+                        plugin.msg(player, lm.General_NoPermission);
                         return true;
                     }
-                } else {
-                    res = plugin.getResidenceManager().getByName(args[1]);
-                    if (res == null) {
-                        plugin.msg(player, lm.Invalid_Residence);
+                    if (args[2].equals("infinite")) {
+                        if (plugin.getLeaseManager().isLeased(plugin.getResidenceManager().getByName(args[1]))) {
+                            plugin.getLeaseManager().removeExpireTime(plugin.getResidenceManager().getByName(args[1]));
+                            plugin.msg(player, lm.Economy_LeaseInfinite);
+                        } else {
+                            plugin.msg(player, lm.Economy_LeaseNotExpire);
+                        }
                         return true;
                     }
-                }
-
-                String until = plugin.getLeaseManager().getExpireTime(res);
-                if (until != null)
-                    plugin.msg(player, lm.Economy_LeaseRenew, until);
-                return true;
-            }
-            if (args[0].equals("renew")) {
-                if (args.length == 2) {
-                    plugin.getLeaseManager().renewArea(plugin.getResidenceManager().getByName(args[1]), player);
-                } else {
-                    ClaimedResidence res = plugin.getResidenceManager().getByLoc(player.getLocation());
-                    if (res != null)
-                        plugin.getLeaseManager().renewArea(res, player);
-                    else
-                        return false;
-                }
-                return true;
-            }
-            if (args[0].equals("list")) {
-                ClaimedResidence res = null;
-                int page = -1;
-                if (args.length > 1)
+                    int days;
                     try {
-                        page = Integer.parseInt(args[1]);
-                    } catch (Exception e) {
+                        days = Integer.parseInt(args[2]);
+                    } catch (Exception ex) {
+                        plugin.msg(player, lm.Invalid_Days);
+                        return true;
+                    }
+                    plugin.getLeaseManager().setExpireTime(player, plugin.getResidenceManager().getByName(args[1]), days);
+                    return true;
+                }
+                case "expires" -> {
+                    ClaimedResidence res = null;
+                    if (args.length == 1) {
+                        res = plugin.getResidenceManager().getByLoc(player.getLocation());
+                        if (res == null) {
+                            plugin.msg(player, lm.Residence_NotIn);
+                            return true;
+                        }
+                    } else {
                         res = plugin.getResidenceManager().getByName(args[1]);
-                    }
-                if (args.length > 2 && page == -1)
-                    try {
-                        page = Integer.parseInt(args[2]);
-                    } catch (Exception e) {
-                        res = plugin.getResidenceManager().getByName(args[2]);
+                        if (res == null) {
+                            plugin.msg(player, lm.Invalid_Residence);
+                            return true;
+                        }
                     }
 
-                if (res == null)
-                    res = plugin.getResidenceManager().getByLoc(player.getLocation());
-
-                if (res == null)
-                    return false;
-
-                List<ClaimedResidence> list = new ArrayList<ClaimedResidence>();
-
-                if (plugin.getLeaseManager().isLeased(res))
-                    list.add(res);
-
-                for (ClaimedResidence one : res.getSubzones()) {
-                    if (plugin.getLeaseManager().isLeased(one))
-                        list.add(one);
+                    String until = plugin.getLeaseManager().getExpireTime(res);
+                    if (until != null)
+                        plugin.msg(player, lm.Economy_LeaseRenew, until);
+                    return true;
                 }
-
-                PageInfo pi = new PageInfo(3, list.size(), page);
-
-                plugin.msg(player, lm.General_Separator);
-                for (ClaimedResidence one : list) {
-                    if (!pi.isEntryOk())
-                        continue;
-
-                    if (pi.isBreak())
-                        break;
-
-                    if (res.isOwner(player))
-                        plugin.msg(player, lm.Economy_LeaseList, pi.getPositionForOutput(), one.getName(), plugin.getLeaseManager().getExpireTime(one), one.getOwner());
-                    else
-                        plugin.msg(player, lm.Economy_LeaseList, pi.getPositionForOutput(), one.getName(), "", "");
+                case "renew" -> {
+                    if (args.length == 2) {
+                        plugin.getLeaseManager().renewArea(plugin.getResidenceManager().getByName(args[1]), player);
+                    } else {
+                        ClaimedResidence res = plugin.getResidenceManager().getByLoc(player.getLocation());
+                        if (res != null)
+                            plugin.getLeaseManager().renewArea(res, player);
+                        else
+                            return false;
+                    }
+                    return true;
                 }
+                case "list" -> {
+                    ClaimedResidence res = null;
+                    int page = -1;
+                    if (args.length > 1)
+                        try {
+                            page = Integer.parseInt(args[1]);
+                        } catch (Exception e) {
+                            res = plugin.getResidenceManager().getByName(args[1]);
+                        }
+                    if (args.length > 2 && page == -1)
+                        try {
+                            page = Integer.parseInt(args[2]);
+                        } catch (Exception e) {
+                            res = plugin.getResidenceManager().getByName(args[2]);
+                        }
 
-                pi.autoPagination(sender, "res lease list " + res.getName());
+                    if (res == null)
+                        res = plugin.getResidenceManager().getByLoc(player.getLocation());
 
-                return true;
-            }
-            if (args[0].equals("cost")) {
-                if (args.length == 2) {
-                    ClaimedResidence res = plugin.getResidenceManager().getByName(args[1]);
-                    if (res == null || plugin.getLeaseManager().isLeased(res)) {
+                    if (res == null)
+                        return false;
+
+                    List<ClaimedResidence> list = new ArrayList<ClaimedResidence>();
+
+                    if (plugin.getLeaseManager().isLeased(res))
+                        list.add(res);
+
+                    for (ClaimedResidence one : res.getSubzones()) {
+                        if (plugin.getLeaseManager().isLeased(one))
+                            list.add(one);
+                    }
+
+                    PageInfo pi = new PageInfo(3, list.size(), page);
+
+                    plugin.msg(player, lm.General_Separator);
+                    for (ClaimedResidence one : list) {
+                        if (!pi.isEntryOk())
+                            continue;
+
+                        if (pi.isBreak())
+                            break;
+
+                        if (res.isOwner(player))
+                            plugin.msg(player, lm.Economy_LeaseList, pi.getPositionForOutput(), one.getName(), plugin.getLeaseManager().getExpireTime(one), one.getOwner());
+                        else
+                            plugin.msg(player, lm.Economy_LeaseList, pi.getPositionForOutput(), one.getName(), "", "");
+                    }
+
+                    pi.autoPagination(sender, "res lease list " + res.getName());
+
+                    return true;
+                }
+                case "cost" -> {
+                    if (args.length == 2) {
+                        ClaimedResidence res = plugin.getResidenceManager().getByName(args[1]);
+                        if (res == null || plugin.getLeaseManager().isLeased(res)) {
+                            double cost = plugin.getLeaseManager().getRenewCostD(res);
+                            plugin.msg(player, lm.Economy_LeaseRenewalCost, args[1], plugin.getEconomyManager().format(cost));
+                        } else {
+                            plugin.msg(player, lm.Economy_LeaseNotExpire);
+                        }
+                        return true;
+                    }
+                    ClaimedResidence res = plugin.getResidenceManager().getByLoc(player.getLocation());
+                    if (res == null) {
+                        plugin.msg(player, lm.Invalid_Area);
+                        return true;
+                    }
+                    String area = res.getName();
+                    if (plugin.getLeaseManager().isLeased(res)) {
                         double cost = plugin.getLeaseManager().getRenewCostD(res);
-                        plugin.msg(player, lm.Economy_LeaseRenewalCost, args[1], plugin.getEconomyManager().format(cost));
+                        plugin.msg(player, lm.Economy_LeaseRenewalCost, area, plugin.getEconomyManager().format(cost));
                     } else {
                         plugin.msg(player, lm.Economy_LeaseNotExpire);
                     }
                     return true;
                 }
-                ClaimedResidence res = plugin.getResidenceManager().getByLoc(player.getLocation());
-                if (res == null) {
-                    plugin.msg(player, lm.Invalid_Area);
-                    return true;
-                }
-                String area = res.getName();
-                if (plugin.getLeaseManager().isLeased(res)) {
-                    double cost = plugin.getLeaseManager().getRenewCostD(res);
-                    plugin.msg(player, lm.Economy_LeaseRenewalCost, area, plugin.getEconomyManager().format(cost));
-                } else {
-                    plugin.msg(player, lm.Economy_LeaseNotExpire);
-                }
-                return true;
             }
         }
         return false;

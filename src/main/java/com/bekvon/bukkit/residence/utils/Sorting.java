@@ -10,20 +10,14 @@ public class Sorting {
     public Map<String, Integer> sortByValueASC(Map<String, Integer> unsortMap) {
 
         // Convert Map to List
-        List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
+        List<Map.Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());
 
         // Sort list with comparator, to compare the Map values
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-            @Override
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                return (o1.getValue()).compareTo(o2.getValue());
-            }
-        });
+        list.sort((o1, o2) -> (o1.getValue()).compareTo(o2.getValue()));
 
         // Convert sorted map back to a Map
-        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
-        for (Iterator<Map.Entry<String, Integer>> it = list.iterator(); it.hasNext(); ) {
-            Map.Entry<String, Integer> entry = it.next();
+        Map<String, Integer> sortedMap = new LinkedHashMap<>();
+        for (Entry<String, Integer> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
         return sortedMap;
@@ -32,20 +26,14 @@ public class Sorting {
     public Map<String, Integer> sortByValueDESC(Map<String, Integer> unsortMap) {
 
         // Convert Map to List
-        List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
+        List<Map.Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());
 
         // Sort list with comparator, to compare the Map values
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-            @Override
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                return (o2.getValue()).compareTo(o1.getValue());
-            }
-        });
+        list.sort((o1, o2) -> (o2.getValue()).compareTo(o1.getValue()));
 
         // Convert sorted map back to a Map
-        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
-        for (Iterator<Map.Entry<String, Integer>> it = list.iterator(); it.hasNext(); ) {
-            Map.Entry<String, Integer> entry = it.next();
+        Map<String, Integer> sortedMap = new LinkedHashMap<>();
+        for (Entry<String, Integer> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
         return sortedMap;
@@ -54,27 +42,21 @@ public class Sorting {
     public Map<String, Integer> sortByKeyDESC(Map<String, Integer> unsortMap) {
 
         // Convert Map to List
-        List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
+        List<Map.Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());
 
         // Sort list with comparator, to compare the Map values
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-            @Override
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                return (o2.getKey()).compareTo(o1.getKey());
-            }
-        });
+        list.sort((o1, o2) -> (o2.getKey()).compareTo(o1.getKey()));
 
         // Convert sorted map back to a Map
-        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
-        for (Iterator<Map.Entry<String, Integer>> it = list.iterator(); it.hasNext(); ) {
-            Map.Entry<String, Integer> entry = it.next();
+        Map<String, Integer> sortedMap = new LinkedHashMap<>();
+        for (Entry<String, Integer> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
         return sortedMap;
     }
 
     public List<ClaimedResidence> sortResidences(List<ClaimedResidence> residences) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         for (ClaimedResidence one : residences) {
             if (one == null)
                 continue;
@@ -93,20 +75,14 @@ public class Sorting {
     public Map<String, Object> sortByKeyASC(Map<String, Object> unsortMap) {
 
         // Convert Map to List
-        List<Map.Entry<String, Object>> list = new LinkedList<Map.Entry<String, Object>>(unsortMap.entrySet());
+        List<Map.Entry<String, Object>> list = new LinkedList<>(unsortMap.entrySet());
 
         // Sort list with comparator, to compare the Map values
-        Collections.sort(list, new Comparator<Map.Entry<String, Object>>() {
-            @Override
-            public int compare(Map.Entry<String, Object> o1, Map.Entry<String, Object> o2) {
-                return (o1.getKey()).compareTo(o2.getKey());
-            }
-        });
+        list.sort((o1, o2) -> (o1.getKey()).compareTo(o2.getKey()));
 
         // Convert sorted map back to a Map
-        Map<String, Object> sortedMap = new LinkedHashMap<String, Object>();
-        for (Iterator<Map.Entry<String, Object>> it = list.iterator(); it.hasNext(); ) {
-            Map.Entry<String, Object> entry = it.next();
+        Map<String, Object> sortedMap = new LinkedHashMap<>();
+        for (Entry<String, Object> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
         return sortedMap;
@@ -115,20 +91,14 @@ public class Sorting {
     public Map<String, String> sortStringByKeyASC(Map<String, String> unsortMap) {
 
         // Convert Map to List
-        List<Map.Entry<String, String>> list = new LinkedList<Map.Entry<String, String>>(unsortMap.entrySet());
+        List<Map.Entry<String, String>> list = new LinkedList<>(unsortMap.entrySet());
 
         // Sort list with comparator, to compare the Map values
-        Collections.sort(list, new Comparator<Map.Entry<String, String>>() {
-            @Override
-            public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
-                return (o1.getKey()).compareTo(o2.getKey());
-            }
-        });
+        list.sort((o1, o2) -> (o1.getKey()).compareTo(o2.getKey()));
 
         // Convert sorted map back to a Map
-        Map<String, String> sortedMap = new LinkedHashMap<String, String>();
-        for (Iterator<Map.Entry<String, String>> it = list.iterator(); it.hasNext(); ) {
-            Map.Entry<String, String> entry = it.next();
+        Map<String, String> sortedMap = new LinkedHashMap<>();
+        for (Entry<String, String> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
         return sortedMap;
@@ -137,20 +107,14 @@ public class Sorting {
     public Map<String, Double> sortDoubleDESC(Map<String, Double> unsortMap) {
 
         // Convert Map to List
-        List<Map.Entry<String, Double>> list = new LinkedList<Map.Entry<String, Double>>(unsortMap.entrySet());
+        List<Map.Entry<String, Double>> list = new LinkedList<>(unsortMap.entrySet());
 
         // Sort list with comparator, to compare the Map values
-        Collections.sort(list, new Comparator<Map.Entry<String, Double>>() {
-            @Override
-            public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) {
-                return (o2.getValue()).compareTo(o1.getValue());
-            }
-        });
+        list.sort((o1, o2) -> (o2.getValue()).compareTo(o1.getValue()));
 
         // Convert sorted map back to a Map
-        Map<String, Double> sortedMap = new LinkedHashMap<String, Double>();
-        for (Iterator<Map.Entry<String, Double>> it = list.iterator(); it.hasNext(); ) {
-            Map.Entry<String, Double> entry = it.next();
+        Map<String, Double> sortedMap = new LinkedHashMap<>();
+        for (Entry<String, Double> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
         return sortedMap;
@@ -159,20 +123,14 @@ public class Sorting {
     public Map<String, Integer> sortASC(Map<String, Integer> unsortMap) {
 
         // Convert Map to List
-        List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
+        List<Map.Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());
 
         // Sort list with comparator, to compare the Map values
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-            @Override
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                return (o1.getValue()).compareTo(o2.getValue());
-            }
-        });
+        list.sort((o1, o2) -> (o1.getValue()).compareTo(o2.getValue()));
 
         // Convert sorted map back to a Map
-        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
-        for (Iterator<Map.Entry<String, Integer>> it = list.iterator(); it.hasNext(); ) {
-            Map.Entry<String, Integer> entry = it.next();
+        Map<String, Integer> sortedMap = new LinkedHashMap<>();
+        for (Entry<String, Integer> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
         return sortedMap;

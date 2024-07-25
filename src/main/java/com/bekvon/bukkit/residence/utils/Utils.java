@@ -81,13 +81,13 @@ public class Utils {
             distance = 15 * 16;
         if (distance < 1)
             distance = 1;
-        ArrayList<Block> blocks = new ArrayList<Block>();
+        ArrayList<Block> blocks = new ArrayList<>();
         Iterator<Block> itr = new BlockIterator(player, distance);
         while (itr.hasNext()) {
             Block block = itr.next();
             blocks.add(block);
             if (distance != 0 && blocks.size() > distance) {
-                blocks.remove(0);
+                blocks.removeFirst();
             }
             Material material = block.getType();
 
@@ -104,7 +104,7 @@ public class Utils {
                 }
             }
         }
-        return !blocks.isEmpty() ? blocks.get(blocks.size() - 1) : null;
+        return !blocks.isEmpty() ? blocks.getLast() : null;
     }
 
     public static String convertLocToStringTiny(Location loc) {
@@ -236,7 +236,7 @@ public class Utils {
     }
 
     public static List<Block> getPistonRetractBlocks(BlockPistonRetractEvent event) {
-        List<Block> blocks = new ArrayList<Block>();
+        List<Block> blocks = new ArrayList<>();
         if (Version.isCurrentEqualOrLower(Version.v1_7_R4)) {
             blocks.add(event.getBlock());
         } else {

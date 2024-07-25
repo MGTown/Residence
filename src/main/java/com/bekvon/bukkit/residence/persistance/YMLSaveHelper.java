@@ -48,7 +48,7 @@ public class YMLSaveHelper {
         if (yml == null)
             yml = new Yaml(constructor, representer, dumperOptions);
 
-        root = new LinkedHashMap<String, Object>();
+        root = new LinkedHashMap<>();
         if (ymlfile == null)
             throw new IOException("YMLSaveHelper: null file...");
         f = ymlfile;

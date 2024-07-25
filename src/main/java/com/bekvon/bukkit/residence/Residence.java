@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -169,11 +168,11 @@ public class Residence extends JavaPlugin {
 
     protected boolean initsuccess = false;
     public Map<String, String> deleteConfirm;
-    public Map<String, String> UnrentConfirm = new HashMap<String, String>();
+    public Map<String, String> UnrentConfirm = new HashMap<>();
     public List<String> resadminToggle;
-    private final ConcurrentHashMap<String, OfflinePlayer> OfflinePlayerList = new ConcurrentHashMap<String, OfflinePlayer>();
-    private final Map<UUID, OfflinePlayer> cachedPlayerNameUUIDs = new HashMap<UUID, OfflinePlayer>();
-    private final Map<UUID, String> cachedPlayerNames = new HashMap<UUID, String>();
+    private final ConcurrentHashMap<String, OfflinePlayer> OfflinePlayerList = new ConcurrentHashMap<>();
+    private final Map<UUID, OfflinePlayer> cachedPlayerNameUUIDs = new HashMap<>();
+    private final Map<UUID, String> cachedPlayerNames = new HashMap<>();
     private com.sk89q.worldedit.bukkit.WorldEditPlugin wep = null;
     private CMIMaterial wepid;
 
@@ -181,9 +180,9 @@ public class Residence extends JavaPlugin {
     private final UUID ServerLandUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
     private final UUID TempUserUUID = UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff");
 
-    public HashMap<String, Long> rtMap = new HashMap<String, Long>();
-    public List<String> teleportDelayMap = new ArrayList<String>();
-    public HashMap<String, ClaimedResidence> teleportMap = new HashMap<String, ClaimedResidence>();
+    public HashMap<String, Long> rtMap = new HashMap<>();
+    public List<String> teleportDelayMap = new ArrayList<>();
+    public HashMap<String, ClaimedResidence> teleportMap = new HashMap<>();
 
     private Placeholder Placeholder;
     private boolean PlaceholderAPIEnabled = false;
@@ -301,22 +300,19 @@ public class Residence extends JavaPlugin {
             }
         }
     };
-    private final Runnable autoSave = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                if (initsuccess) {
-                    CMIScheduler.runTaskAsynchronously(() -> {
-                        try {
-                            saveYml();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                }
-            } catch (Exception ex) {
-                Logger.getLogger("Minecraft").log(Level.SEVERE, getPrefix() + " SEVERE SAVE ERROR", ex);
+    private final Runnable autoSave = () -> {
+        try {
+            if (initsuccess) {
+                CMIScheduler.runTaskAsynchronously(() -> {
+                    try {
+                        saveYml();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
+        } catch (Exception ex) {
+            Logger.getLogger("Minecraft").log(Level.SEVERE, getPrefix() + " SEVERE SAVE ERROR", ex);
         }
     };
 
@@ -374,8 +370,8 @@ public class Residence extends JavaPlugin {
             instance = this;
 
             initsuccess = false;
-            deleteConfirm = new HashMap<String, String>();
-            resadminToggle = new ArrayList<String>();
+            deleteConfirm = new HashMap<>();
+            resadminToggle = new ArrayList<>();
             server = this.getServer();
             dataFolder = this.getDataFolder();
 
@@ -1007,7 +1003,7 @@ public class Residence extends JavaPlugin {
             boolean emptyRecord = false;
             // Not saving files without any records in them. Mainly for servers with many small temporary worlds
             try {
-                emptyRecord = ((LinkedHashMap) entry.getValue()).isEmpty();
+                emptyRecord = ((LinkedHashMap<?, ?>) entry.getValue()).isEmpty();
             } catch (Throwable e) {
             }
 
@@ -1117,7 +1113,7 @@ public class Residence extends JavaPlugin {
 
         HashMap<Integer, MinimizeFlags> c = getResidenceManager().getCacheFlags().get(worldName);
         if (c == null)
-            c = new HashMap<Integer, MinimizeFlags>();
+            c = new HashMap<>();
         Map<Integer, Object> ms = (Map<Integer, Object>) yml.getRoot().get("Flags");
         if (ms == null)
             return;
@@ -1139,7 +1135,7 @@ public class Residence extends JavaPlugin {
 
         HashMap<Integer, MinimizeMessages> c = getResidenceManager().getCacheMessages().get(worldName);
         if (c == null)
-            c = new HashMap<Integer, MinimizeMessages>();
+            c = new HashMap<>();
         Map<Integer, Object> ms = (Map<Integer, Object>) yml.getRoot().get("Messages");
         if (ms == null)
             return;
@@ -1314,7 +1310,7 @@ public class Residence extends JavaPlugin {
 
         File newGroups = new File(this.getDataFolder(), "config.yml");
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("ResidenceVersion");
         list.add("Global.Flags");
         list.add("Global.FlagPermission");
@@ -1333,7 +1329,7 @@ public class Residence extends JavaPlugin {
 
         File newConfig = new File(this.getDataFolder(), "groups.yml");
         list.clear();
-        list = new ArrayList<String>();
+        list = new ArrayList<>();
         list.add("ResidenceVersion");
         list.add("Global");
         list.add("ItemList");
@@ -1346,7 +1342,7 @@ public class Residence extends JavaPlugin {
 
         File newFlags = new File(this.getDataFolder(), "flags.yml");
         list.clear();
-        list = new ArrayList<String>();
+        list = new ArrayList<>();
         list.add("ResidenceVersion");
         list.add("GroupAssignments");
         list.add("Groups");
@@ -1403,9 +1399,7 @@ public class Residence extends JavaPlugin {
     }
 
     private static void copy(File source, File target) throws IOException {
-        InputStream in = new FileInputStream(source);
-        OutputStream out = new FileOutputStream(target);
-        try {
+        try (InputStream in = new FileInputStream(source); OutputStream out = new FileOutputStream(target)) {
             byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) {
@@ -1413,9 +1407,6 @@ public class Residence extends JavaPlugin {
             }
         } catch (Throwable e) {
             e.printStackTrace();
-        } finally {
-            in.close();
-            out.close();
         }
     }
 
@@ -1456,8 +1447,7 @@ public class Residence extends JavaPlugin {
             File fileBackup = new File(this.getDataFolder(), "backup-" + writeName);
             File jarloc = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getCanonicalFile();
             if (jarloc.isFile()) {
-                JarFile jar = new JarFile(jarloc);
-                try {
+                try (JarFile jar = new JarFile(jarloc)) {
                     JarEntry entry = jar.getJarEntry(jarPath);
                     if (entry != null && !entry.isDirectory()) {
                         InputStream in = jar.getInputStream(entry);
@@ -1492,8 +1482,6 @@ public class Residence extends JavaPlugin {
                     }
                 } catch (Throwable ex) {
                     ex.printStackTrace();
-                } finally {
-                    jar.close();
                 }
             }
             return false;

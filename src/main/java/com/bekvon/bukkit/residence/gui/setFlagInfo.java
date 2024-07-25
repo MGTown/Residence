@@ -25,8 +25,8 @@ public class setFlagInfo {
     private final ClaimedResidence residence;
     private final Player player;
     private String targetPlayer = null;
-    private final LinkedHashMap<Flags, List<String>> description = new LinkedHashMap<Flags, List<String>>();
-    private final List<CMIGuiButton> buttons = new ArrayList<CMIGuiButton>();
+    private final LinkedHashMap<Flags, List<String>> description = new LinkedHashMap<>();
+    private final List<CMIGuiButton> buttons = new ArrayList<>();
     private boolean admin = false;
 
     public setFlagInfo(ClaimedResidence residence, Player player, boolean admin) {
@@ -62,20 +62,20 @@ public class setFlagInfo {
 
     private void fillFlagDescriptions() {
         for (Flags flag : Flags.values()) {
-            List<String> lore = new ArrayList<String>();
+            List<String> lore = new ArrayList<>();
             int i = 0;
-            String sentence = "";
+            StringBuilder sentence = new StringBuilder();
 
             for (String oneWord : flag.getDesc().split(" ")) {
-                sentence += oneWord + " ";
+                sentence.append(oneWord).append(" ");
                 if (i > 4) {
-                    lore.add(ChatColor.YELLOW + sentence);
-                    sentence = "";
+                    lore.add(ChatColor.YELLOW + sentence.toString());
+                    sentence = new StringBuilder();
                     i = 0;
                 }
                 i++;
             }
-            lore.add(ChatColor.YELLOW + sentence);
+            lore.add(ChatColor.YELLOW + sentence.toString());
             description.put(flag, lore);
         }
     }
@@ -92,8 +92,8 @@ public class setFlagInfo {
 
         List<String> flags = residence.getPermissions().getPosibleFlags(player, true, this.admin);
 
-        Map<String, Boolean> resFlags = new HashMap<String, Boolean>();
-        Map<String, Object> TempPermMap = new LinkedHashMap<String, Object>();
+        Map<String, Boolean> resFlags = new HashMap<>();
+        Map<String, Object> TempPermMap = new LinkedHashMap<>();
 
         Map<String, Boolean> globalFlags = Residence.getInstance().getPermissionManager().getAllFlags().getFlags();
 
@@ -128,10 +128,8 @@ public class setFlagInfo {
 
 //	FlagData flagData = Residence.getInstance().getFlagUtilManager().getFlagData();
 
-        LinkedHashMap<String, Object> permMap = new LinkedHashMap<String, Object>();
-        for (Entry<String, Object> one : TempPermMap.entrySet()) {
-            permMap.put(one.getKey(), one.getValue());
-        }
+        LinkedHashMap<String, Object> permMap = new LinkedHashMap<>();
+        permMap.putAll(TempPermMap);
 
         String cmdPrefix = admin ? "resadmin" : "res";
 
@@ -180,14 +178,14 @@ public class setFlagInfo {
     }
 
     private void recalculatePlayer() {
-        Map<String, Boolean> globalFlags = new HashMap<String, Boolean>();
+        Map<String, Boolean> globalFlags = new HashMap<>();
         for (Flags oneFlag : Flags.values()) {
             globalFlags.put(oneFlag.toString(), oneFlag.isEnabled());
         }
 
         List<String> flags = residence.getPermissions().getPosibleFlags(player, false, this.admin);
 
-        Map<String, Boolean> resFlags = new HashMap<String, Boolean>();
+        Map<String, Boolean> resFlags = new HashMap<>();
 
         for (Entry<String, Boolean> one : residence.getPermissions().getFlags().entrySet()) {
             if (flags.contains(one.getKey()))
@@ -197,7 +195,7 @@ public class setFlagInfo {
         if (targetPlayer != null) {
 
             Set<String> PosibleResPFlags = FlagPermissions.getAllPosibleFlags();
-            Map<String, Boolean> temp = new HashMap<String, Boolean>();
+            Map<String, Boolean> temp = new HashMap<>();
             for (String one : PosibleResPFlags) {
                 if (globalFlags.containsKey(one))
                     temp.put(one, globalFlags.get(one));
@@ -207,12 +205,10 @@ public class setFlagInfo {
             Map<String, Boolean> pFlags = residence.getPermissions().getPlayerFlags(targetPlayer);
 
             if (pFlags != null)
-                for (Entry<String, Boolean> one : pFlags.entrySet()) {
-                    resFlags.put(one.getKey(), one.getValue());
-                }
+                resFlags.putAll(pFlags);
         }
 
-        LinkedHashMap<String, Object> TempPermMap = new LinkedHashMap<String, Object>();
+        LinkedHashMap<String, Object> TempPermMap = new LinkedHashMap<>();
 
         for (Entry<String, Boolean> one : globalFlags.entrySet()) {
             if (!flags.contains(one.getKey()))
@@ -226,10 +222,8 @@ public class setFlagInfo {
 
         TempPermMap = (LinkedHashMap<String, Object>) Residence.getInstance().getSortingManager().sortByKeyASC(TempPermMap);
 
-        LinkedHashMap<String, Object> permMap = new LinkedHashMap<String, Object>();
-        for (Entry<String, Object> one : TempPermMap.entrySet()) {
-            permMap.put(one.getKey(), one.getValue());
-        }
+        LinkedHashMap<String, Object> permMap = new LinkedHashMap<>();
+        permMap.putAll(TempPermMap);
 
         String targetPlayerName = targetPlayer == null ? "" : " " + targetPlayer;
         String cmdPrefix = admin ? "resadmin" : "res";
@@ -334,19 +328,13 @@ public class setFlagInfo {
         if (MiscInfoMeta == null)
             return miscInfo;
         MiscInfoMeta.setDisplayName(ChatColor.GREEN + flagName);
-        List<String> lore = new ArrayList<String>();
-        String variable = "";
-        switch (state) {
-            case FALSE:
-                variable = Residence.getInstance().msg(lm.General_False);
-                break;
-            case TRUE:
-                variable = Residence.getInstance().msg(lm.General_True);
-                break;
-            case NEITHER:
-                variable = Residence.getInstance().msg(lm.General_Removed);
-                break;
-        }
+        List<String> lore = new ArrayList<>();
+        String variable = switch (state) {
+            case FALSE -> Residence.getInstance().msg(lm.General_False);
+            case TRUE -> Residence.getInstance().msg(lm.General_True);
+            case NEITHER -> Residence.getInstance().msg(lm.General_Removed);
+            default -> "";
+        };
         lore.add(Residence.getInstance().msg(lm.General_FlagState, variable));
 
         if (description.containsKey(flag))

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -17,8 +16,8 @@ import net.Zrips.CMILib.Version.Schedulers.CMITask;
 public class Visualizer {
     private Player player;
     private long start;
-    private List<CuboidArea> areas = new ArrayList<CuboidArea>();
-    private List<CuboidArea> errorAreas = new ArrayList<CuboidArea>();
+    private List<CuboidArea> areas = new ArrayList<>();
+    private List<CuboidArea> errorAreas = new ArrayList<>();
     private CMITask mainSchduler = null;
     private CMITask errorScheduler = null;
     private CompletableFuture<Void> baseSheduler = null;
@@ -26,10 +25,10 @@ public class Visualizer {
     private int starting = 0;
     private int currentSkip = 0;
 
-    private List<Location> locations = new ArrayList<Location>();
-    private List<Location> errorLocations = new ArrayList<Location>();
-    private List<Location> locations2 = new ArrayList<Location>();
-    private List<Location> errorLocations2 = new ArrayList<Location>();
+    private List<Location> locations = new ArrayList<>();
+    private List<Location> errorLocations = new ArrayList<>();
+    private List<Location> locations2 = new ArrayList<>();
+    private List<Location> errorLocations2 = new ArrayList<>();
     private Location loc = null;
 
     public Visualizer(Player player) {
@@ -96,7 +95,7 @@ public class Visualizer {
     }
 
     public void setAreas(CuboidArea area) {
-        areas = new ArrayList<CuboidArea>();
+        areas = new ArrayList<>();
         this.areas.add(area);
     }
 

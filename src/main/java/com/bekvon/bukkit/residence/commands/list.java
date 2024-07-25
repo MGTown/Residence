@@ -22,9 +22,9 @@ public class list implements cmd {
         String target = null;
 
         c:
-        for (int i = 0; i < args.length; i++) {
+        for (String arg : args) {
             try {
-                page = Integer.parseInt(args[i]);
+                page = Integer.parseInt(arg);
                 if (page < 1)
                     page = 1;
                 continue;
@@ -32,12 +32,12 @@ public class list implements cmd {
             }
 
             for (World w : Bukkit.getWorlds()) {
-                if (w.getName().equalsIgnoreCase(args[i])) {
+                if (w.getName().equalsIgnoreCase(arg)) {
                     world = w;
                     continue c;
                 }
             }
-            target = args[i];
+            target = arg;
         }
 
         if (target != null && !sender.getName().equalsIgnoreCase(target) && !ResPerm.command_$1_others.hasPermission(sender, this.getClass().getSimpleName()))

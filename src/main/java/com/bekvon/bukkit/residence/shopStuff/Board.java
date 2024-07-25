@@ -14,8 +14,8 @@ public class Board {
 
     int StartPlace = 0;
 
-    List<Location> Locations = new ArrayList<Location>();
-    HashMap<String, Location> SignLocations = new HashMap<String, Location>();
+    List<Location> Locations = new ArrayList<>();
+    HashMap<String, Location> SignLocations = new HashMap<>();
 
     public void clearSignLoc() {
         SignLocations.clear();

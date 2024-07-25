@@ -174,7 +174,7 @@ public class Language {
     }
 
     private static List<String> ColorsArray(List<String> text) {
-        List<String> temp = new ArrayList<String>();
+        List<String> temp = new ArrayList<>();
         for (String part : text) {
             temp.add(Colors(part));
         }

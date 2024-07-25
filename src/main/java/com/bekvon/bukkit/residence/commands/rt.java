@@ -37,14 +37,14 @@ public class rt implements cmd {
 
         if (args.length > 0) {
             c:
-            for (int i = 0; i < args.length; i++) {
+            for (String arg : args) {
                 for (RandomTeleport one : plugin.getConfigManager().getRandomTeleport()) {
-                    if (!one.getCenter().getWorld().getName().equalsIgnoreCase(args[i]))
+                    if (!one.getCenter().getWorld().getName().equalsIgnoreCase(arg))
                         continue;
                     wname = one.getCenter().getWorld();
                     continue c;
                 }
-                Player p = Bukkit.getPlayer(args[i]);
+                Player p = Bukkit.getPlayer(arg);
                 if (p != null)
                     tPlayer = p;
             }
@@ -109,9 +109,7 @@ public class rt implements cmd {
             teleport(sender, player, lc, sec, resadmin);
         } else {
             CompletableFuture<Location> aloc = plugin.getRandomTpManager().getRandomlocationAsync(worldName);
-            aloc.thenApply(lc -> {
-                return teleport(sender, player, lc, sec, resadmin);
-            });
+            aloc.thenApply(lc -> teleport(sender, player, lc, sec, resadmin));
         }
 
         return true;

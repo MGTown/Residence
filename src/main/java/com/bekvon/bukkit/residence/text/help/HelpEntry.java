@@ -37,7 +37,7 @@ public class HelpEntry {
 
     public HelpEntry(String entryname) {
         name = entryname;
-        subentrys = new ArrayList<HelpEntry>();
+        subentrys = new ArrayList<>();
         lines = new String[0];
     }
 
@@ -76,16 +76,16 @@ public class HelpEntry {
 //	sender.sendMessage(separator + " " + Residence.getInstance().msg(lm.General_HelpPageHeader, path, page, pi.getTotalPages()) + " " + separator);
 
         for (int i = pi.getStart(); i <= pi.getEnd(); i++) {
-            if (helplines.get(i).getCommand() != null) {
-                HelpEntry sub = this.getSubEntry(helplines.get(i).getCommand());
+            if (helplines.get(i).command() != null) {
+                HelpEntry sub = this.getSubEntry(helplines.get(i).command());
 
-                String desc = "&6";
+                StringBuilder desc = new StringBuilder("&6");
                 int y = 0;
                 for (String one : sub.lines) {
-                    desc += one;
+                    desc.append(one);
                     y++;
                     if (y < sub.lines.length) {
-                        desc += "\n";
+                        desc.append("\n");
                     }
                 }
 
@@ -93,11 +93,11 @@ public class HelpEntry {
                     path = path.replace("/res ", "/resadmin ");
 
                 RawMessage rm = new RawMessage();
-                rm.addText(CMIChatColor.translate("&6" + helplines.get(i).getDesc())).addHover(desc).addSuggestion(path + helplines.get(i).getCommand());
+                rm.addText(CMIChatColor.translate("&6" + helplines.get(i).desc())).addHover(desc.toString()).addSuggestion(path + helplines.get(i).command());
                 rm.show(sender);
 
             } else
-                sender.sendMessage(CMIChatColor.translate("&6" + helplines.get(i).getDesc()));
+                sender.sendMessage(CMIChatColor.translate("&6" + helplines.get(i).desc()));
         }
 
         String baseCmd = resadmin ? "resadmin" : "res";
@@ -115,7 +115,7 @@ public class HelpEntry {
     }
 
     private List<HelpLines> getHelpData(CommandSender sender, boolean resadmin) {
-        List<HelpLines> helplines = new ArrayList<HelpLines>();
+        List<HelpLines> helplines = new ArrayList<>();
 
         for (String one : lines) {
             helplines.add(new HelpLines(null, one));
@@ -123,7 +123,7 @@ public class HelpEntry {
 
         FlagPermissions GlobalFlags = Residence.getInstance().getPermissionManager().getAllFlags();
 
-        Map<String, String> unsortMap = new HashMap<String, String>();
+        Map<String, String> unsortMap = new HashMap<>();
 
         for (HelpEntry entry : subentrys) {
 
@@ -148,14 +148,13 @@ public class HelpEntry {
 
                     String desc = entry.getDescription();
 
-                    switch (entry.getName().toLowerCase()) {
-                        case "wspeed1":
-                            desc = desc.replace("%1", Residence.getInstance().getConfigManager().getWalkSpeed1() + "");
-                            break;
-                        case "wspeed2":
-                            desc = desc.replace("%1", Residence.getInstance().getConfigManager().getWalkSpeed2() + "");
-                            break;
-                    }
+                    desc = switch (entry.getName().toLowerCase()) {
+                        case "wspeed1" ->
+                                desc.replace("%1", Residence.getInstance().getConfigManager().getWalkSpeed1() + "");
+                        case "wspeed2" ->
+                                desc.replace("%1", Residence.getInstance().getConfigManager().getWalkSpeed2() + "");
+                        default -> desc;
+                    };
 
                     // adding flag name and description for later sorting
                     unsortMap.put(entry.getName(), Residence.getInstance().msg(lm.InformationPage_FlagsList, flagName, desc));
@@ -241,9 +240,7 @@ public class HelpEntry {
                 Set<String> subcommandkeys = node.getConfigurationSection(key + ".SubCommands").getKeys(false);
                 if (key.equalsIgnoreCase("CommandHelp.SubCommands.res")) {
                     subcommandkeys.clear();
-                    for (String one : Residence.getInstance().getCommandFiller().getCommands()) {
-                        subcommandkeys.add(one);
-                    }
+                    subcommandkeys.addAll(Residence.getInstance().getCommandFiller().getCommands());
                 }
                 for (String subkey : subcommandkeys) {
                     entry.subentrys.add(HelpEntry.parseHelp(node, key + ".SubCommands." + subkey));
@@ -269,7 +266,7 @@ public class HelpEntry {
             if (!st.toString().isEmpty())
                 st.append("%%");
             if (one.getKey().equalsIgnoreCase("") && !one.getValue().isEmpty())
-                st.append(one.getValue().get(0));
+                st.append(one.getValue().getFirst());
             else
                 st.append(one.getKey());
         }
@@ -278,17 +275,17 @@ public class HelpEntry {
 
     @SuppressWarnings("deprecation")
     public Set<String> getSubCommands(CommandSender sender, String[] args) {
-        Set<String> subCommands = new HashSet<String>();
+        Set<String> subCommands = new HashSet<>();
         int neededArgPlace = args.length - 2;
 
         if (neededArgPlace < 0)
             neededArgPlace = 0;
 
-        List<String> ArgsList = new ArrayList<String>();
+        List<String> ArgsList = new ArrayList<>();
 
         if (args.length > 0) {
-            HashMap<String, List<String>> mp = new HashMap<String, List<String>>();
-            List<String> base = new ArrayList<String>();
+            HashMap<String, List<String>> mp = new HashMap<>();
+            List<String> base = new ArrayList<>();
             for (Entry<String, HashMap<String, List<String>>> one : Residence.getInstance().getLocaleManager().CommandTab.entrySet()) {
                 if (one.getKey().startsWith(args[0].toLowerCase())) {
                     mp.putAll(one.getValue());
@@ -352,7 +349,7 @@ public class HelpEntry {
 
         if (NeededArg != null) {
 
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
 
             if (NeededArg.contains("%%")) {
                 list.addAll(Arrays.asList(NeededArg.split("%%")));
@@ -516,6 +513,6 @@ public class HelpEntry {
             return subCommands;
         }
 
-        return new HashSet<String>(List.of("?"));
+        return new HashSet<>(List.of("?"));
     }
 }

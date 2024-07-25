@@ -26,11 +26,10 @@ import com.bekvon.bukkit.residence.containers.cmd;
 import com.bekvon.bukkit.residence.containers.lm;
 
 import net.Zrips.CMILib.FileHandler.ConfigReader;
-import net.Zrips.CMILib.Logs.CMIDebug;
 
 public class LocaleManager {
 
-    public HashMap<String, HashMap<String, List<String>>> CommandTab = new HashMap<String, HashMap<String, List<String>>>();
+    public HashMap<String, HashMap<String, List<String>>> CommandTab = new HashMap<>();
     private final Residence plugin;
 
     public String path = "CommandHelp.SubCommands.res.SubCommands.";
@@ -41,7 +40,7 @@ public class LocaleManager {
     }
 
     public static void addTabCompleteMain(Object cl, String... tabs) {
-        HashMap<String, List<String>> mp = new HashMap<String, List<String>>();
+        HashMap<String, List<String>> mp = new HashMap<>();
         mp.put("", Arrays.asList(tabs));
         Residence.getInstance().getLocaleManager().CommandTab.put(cl.getClass().getSimpleName().toLowerCase(), mp);
     }
@@ -49,7 +48,7 @@ public class LocaleManager {
     public static void addTabCompleteSub(Object cl, String subCmd, String... tabs) {
         HashMap<String, List<String>> mp = Residence.getInstance().getLocaleManager().CommandTab.get(cl.getClass().getSimpleName().toLowerCase());
         if (mp == null)
-            mp = new HashMap<String, List<String>>();
+            mp = new HashMap<>();
         mp.put(subCmd.toLowerCase(), Arrays.asList(tabs));
         Residence.getInstance().getLocaleManager().CommandTab.put(cl.getClass().getSimpleName().toLowerCase(), mp);
     }
@@ -59,7 +58,6 @@ public class LocaleManager {
         YamlConfiguration config = new YamlConfiguration();
         try {
             config.load(in);
-        } catch (FileNotFoundException ex) {
         } catch (IOException ex) {
         } catch (InvalidConfigurationException ex) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[Residence] Your locale file for " + language
@@ -127,7 +125,7 @@ public class LocaleManager {
             if (lm.getText() instanceof String)
                 c.get(lm.getPath(), String.valueOf(lm.getText()));
             else if (lm.getText() instanceof ArrayList<?>) {
-                List<String> result = new ArrayList<String>();
+                List<String> result = new ArrayList<>();
                 for (Object obj : (ArrayList<?>) lm.getText()) {
                     if (obj instanceof String) {
                         result.add((String) obj);

@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class FlagData {
 
-    private final HashMap<String, ItemStack> items = new HashMap<String, ItemStack>();
+    private final HashMap<String, ItemStack> items = new HashMap<>();
 
     public void addFlagButton(String flag, ItemStack item) {
         this.items.put(flag, item == null ? CMIMaterial.STONE.newItemStack() : item);

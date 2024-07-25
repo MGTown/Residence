@@ -15,7 +15,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -61,7 +60,6 @@ import net.Zrips.CMILib.Container.PageInfo;
 import net.Zrips.CMILib.Items.CMIMaterial;
 import net.Zrips.CMILib.RawMessages.RawMessage;
 import net.Zrips.CMILib.TitleMessages.CMITitleMessage;
-import net.Zrips.CMILib.Version.Version;
 import net.Zrips.CMILib.Version.Schedulers.CMIScheduler;
 import net.Zrips.CMILib.Version.Teleporters.CMITeleporter;
 
@@ -87,17 +85,17 @@ public class ClaimedResidence {
 
     private long leaseExpireTime = 0;
 
-    protected List<String> cmdWhiteList = new ArrayList<String>();
-    protected List<String> cmdBlackList = new ArrayList<String>();
+    protected List<String> cmdWhiteList = new ArrayList<>();
+    protected List<String> cmdBlackList = new ArrayList<>();
 
-    List<ShopVote> ShopVoteList = new ArrayList<ShopVote>();
+    List<ShopVote> ShopVoteList = new ArrayList<>();
 
     protected RentableLand rentableland = null;
     protected RentedLand rentedland = null;
 
     protected int sellPrice = -1;
 
-    private Set<Signs> signsInResidence = Collections.synchronizedSet(new HashSet<Signs>());
+    private Set<Signs> signsInResidence = Collections.synchronizedSet(new HashSet<>());
 
     public String getResidenceName() {
         return resName;
@@ -673,7 +671,7 @@ public class ClaimedResidence {
 
         if ((!resadmin) && (player != null)) {
             int chargeamount = (int) Math
-                    .ceil((newarea.getSize() - oldarea.getSize()) * getBlockSellPrice().doubleValue());
+                    .ceil((newarea.getSize() - oldarea.getSize()) * getBlockSellPrice());
             if ((chargeamount < 0) && (Residence.getInstance().getConfigManager().useResMoneyBack())) {
                 if (!this.isServerLand())
                     Residence.getInstance().getTransactionManager().giveEconomyMoney(player, -chargeamount);
@@ -866,7 +864,7 @@ public class ClaimedResidence {
                 zones.add(key);
             }
         }
-        return zones.toArray(new String[zones.size()]);
+        return zones.toArray(new String[0]);
     }
 
     public boolean checkCollision(CuboidArea area) {
@@ -1089,7 +1087,7 @@ public class ClaimedResidence {
             return bw != null ? bw.getSpawnLocation() != null ? bw.getSpawnLocation() : player.getWorld().getSpawnLocation() : player.getWorld().getSpawnLocation();
         }
 
-        List<RandomLoc> randomLocList = new ArrayList<RandomLoc>();
+        List<RandomLoc> randomLocList = new ArrayList<>();
 
         for (int z = -1; z < area.getZSize() + 2; z++) {
             randomLocList.add(new RandomLoc(area.getLowVector().getX(), 0, area.getLowVector().getZ() + z));
@@ -1211,7 +1209,7 @@ public class ClaimedResidence {
     }
 
     public List<ClaimedResidence> getSubzones() {
-        List<ClaimedResidence> list = new ArrayList<ClaimedResidence>();
+        List<ClaimedResidence> list = new ArrayList<>();
         for (Entry<String, ClaimedResidence> res : subzones.entrySet()) {
             list.add(res.getValue());
         }
@@ -1260,9 +1258,7 @@ public class ClaimedResidence {
 
     public void printAreaList(Player player, int page) {
         ArrayList<String> temp = new ArrayList<>();
-        for (String area : areas.keySet()) {
-            temp.add(area);
-        }
+        temp.addAll(areas.keySet());
         Residence.getInstance().getInfoPageManager().printInfo(player, "res area list " + this.getName(),
                 Residence.getInstance().msg(lm.General_PhysicalAreas), temp, page);
     }
@@ -1641,7 +1637,7 @@ public class ClaimedResidence {
         }
 
         try {
-            if (!ChatPrefix.equals(""))
+            if (!ChatPrefix.isEmpty())
                 root.put("ChatPrefix", ChatPrefix);
         } catch (Throwable e) {
             e.printStackTrace();
@@ -1704,7 +1700,7 @@ public class ClaimedResidence {
                                     + convertDouble(tpLoc.getZ()) + ":" + convertDouble(PitchYaw == null ? 0 : PitchYaw.getX()) + ":"
                                     + convertDouble(PitchYaw == null ? 0 : PitchYaw.getY()));
                 } else {
-                    Map<String, Object> tpmap = new HashMap<String, Object>();
+                    Map<String, Object> tpmap = new HashMap<>();
                     tpmap.put("X", convertDouble(this.tpLoc.getX()));
                     tpmap.put("Y", convertDouble(this.tpLoc.getY()));
                     tpmap.put("Z", convertDouble(this.tpLoc.getZ()));
@@ -2257,10 +2253,8 @@ public class ClaimedResidence {
     }
 
     public Set<ResidencePlayer> getTrustedPlayers() {
-        Set<ResidencePlayer> trusted = new HashSet<ResidencePlayer>();
-        Iterator<Entry<String, Map<String, Boolean>>> iter = this.getPermissions().getPlayerFlags().entrySet().iterator();
-        while (iter.hasNext()) {
-            Entry<String, Map<String, Boolean>> entry = iter.next();
+        Set<ResidencePlayer> trusted = new HashSet<>();
+        for (Entry<String, Map<String, Boolean>> entry : this.getPermissions().getPlayerFlags().entrySet()) {
             if (isTrusted(entry.getKey())) {
                 ResidencePlayer rp = ResidencePlayer.get(entry.getKey());
                 if (rp != null)

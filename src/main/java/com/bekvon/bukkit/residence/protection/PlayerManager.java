@@ -21,11 +21,9 @@ import com.bekvon.bukkit.residence.containers.ResidencePlayer;
 import com.bekvon.bukkit.residence.containers.lm;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 
-import net.Zrips.CMILib.Logs.CMIDebug;
-
 public class PlayerManager implements ResidencePlayerInterface {
-    private final ConcurrentHashMap<String, ResidencePlayer> players = new ConcurrentHashMap<String, ResidencePlayer>();
-    private final ConcurrentHashMap<String, ResidencePlayer> playersUuid = new ConcurrentHashMap<String, ResidencePlayer>();
+    private final ConcurrentHashMap<String, ResidencePlayer> players = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ResidencePlayer> playersUuid = new ConcurrentHashMap<>();
     private final Residence plugin;
 
     public PlayerManager(Residence plugin) {
@@ -102,7 +100,7 @@ public class PlayerManager implements ResidencePlayerInterface {
 
     @Override
     public ArrayList<String> getResidenceList(UUID uuid) {
-        ArrayList<String> temp = new ArrayList<String>();
+        ArrayList<String> temp = new ArrayList<>();
 //	playerJoin(player, false);
         ResidencePlayer resPlayer = playersUuid.get(uuid.toString());
         if (resPlayer != null) {
@@ -119,7 +117,7 @@ public class PlayerManager implements ResidencePlayerInterface {
         Player player = Bukkit.getPlayer(name);
         if (player != null)
             return getResidenceList(player.getUniqueId());
-        ArrayList<String> temp = new ArrayList<String>();
+        ArrayList<String> temp = new ArrayList<>();
         ResidencePlayer resPlayer = this.getResidencePlayer(name);
         if (resPlayer != null) {
             for (ClaimedResidence one : resPlayer.getResList()) {
@@ -136,7 +134,7 @@ public class PlayerManager implements ResidencePlayerInterface {
     }
 
     public ArrayList<String> getResidenceList(String player, boolean showhidden, boolean onlyHidden) {
-        ArrayList<String> temp = new ArrayList<String>();
+        ArrayList<String> temp = new ArrayList<>();
 //	playerJoin(player, false);
         ResidencePlayer resPlayer = this.getResidencePlayer(player);
         if (resPlayer == null)
@@ -152,7 +150,7 @@ public class PlayerManager implements ResidencePlayerInterface {
             temp.add(plugin.msg(lm.Residence_List, "", one.getName(), one.getWorld()) +
                     (hidden ? plugin.msg(lm.Residence_Hidden) : ""));
         }
-        Collections.sort(temp, String.CASE_INSENSITIVE_ORDER);
+        temp.sort(String.CASE_INSENSITIVE_ORDER);
         return temp;
     }
 
@@ -166,7 +164,7 @@ public class PlayerManager implements ResidencePlayerInterface {
 
     // All 3 methods could be compacted into one, if needed
     public ArrayList<ClaimedResidence> getResidences(String player, boolean showhidden, boolean onlyHidden, World world) {
-        ArrayList<ClaimedResidence> temp = new ArrayList<ClaimedResidence>();
+        ArrayList<ClaimedResidence> temp = new ArrayList<>();
         ResidencePlayer resPlayer = this.getResidencePlayer(player);
         if (resPlayer == null)
             return temp;
@@ -184,7 +182,7 @@ public class PlayerManager implements ResidencePlayerInterface {
     }
 
     public TreeMap<String, ClaimedResidence> getResidencesMap(String player, boolean showhidden, boolean onlyHidden, World world) {
-        TreeMap<String, ClaimedResidence> temp = new TreeMap<String, ClaimedResidence>();
+        TreeMap<String, ClaimedResidence> temp = new TreeMap<>();
 
         ResidencePlayer resPlayer = this.getResidencePlayer(player);
         if (resPlayer == null) {
@@ -206,7 +204,7 @@ public class PlayerManager implements ResidencePlayerInterface {
     }
 
     public TreeMap<String, ClaimedResidence> getTrustedResidencesMap(String player, boolean showhidden, boolean onlyHidden, World world) {
-        TreeMap<String, ClaimedResidence> temp = new TreeMap<String, ClaimedResidence>();
+        TreeMap<String, ClaimedResidence> temp = new TreeMap<>();
 
         ResidencePlayer resPlayer = this.getResidencePlayer(player);
         if (resPlayer == null) {

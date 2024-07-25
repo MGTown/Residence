@@ -1,6 +1,5 @@
 package com.bekvon.bukkit.residence.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;

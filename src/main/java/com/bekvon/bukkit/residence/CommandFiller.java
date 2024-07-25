@@ -19,17 +19,17 @@ import com.bekvon.bukkit.residence.containers.CommandStatus;
 public class CommandFiller {
 
     public final String packagePath = "com.bekvon.bukkit.residence.commands";
-    private final Map<String, CommandStatus> CommandList = new HashMap<String, CommandStatus>();
+    private final Map<String, CommandStatus> CommandList = new HashMap<>();
 
     public List<String> getCommands(Boolean simple) {
-        Map<String, Integer> cmd = new HashMap<String, Integer>();
+        Map<String, Integer> cmd = new HashMap<>();
         for (Entry<String, CommandStatus> one : CommandList.entrySet()) {
             if (simple && !one.getValue().getSimple() || !simple && one.getValue().getSimple())
                 continue;
             cmd.put(one.getKey(), one.getValue().getPriority());
         }
         cmd = Residence.getInstance().getSortingManager().sortByValueASC(cmd);
-        List<String> cmdList = new ArrayList<String>();
+        List<String> cmdList = new ArrayList<>();
         for (Entry<String, Integer> one : cmd.entrySet()) {
             cmdList.add(one.getKey());
         }
@@ -37,12 +37,12 @@ public class CommandFiller {
     }
 
     public List<String> getCommands() {
-        Map<String, Integer> cmd = new HashMap<String, Integer>();
+        Map<String, Integer> cmd = new HashMap<>();
         for (Entry<String, CommandStatus> one : CommandList.entrySet()) {
             cmd.put(one.getKey(), one.getValue().getPriority());
         }
         cmd = Residence.getInstance().getSortingManager().sortByValueASC(cmd);
-        List<String> cmdList = new ArrayList<String>();
+        List<String> cmdList = new ArrayList<>();
         for (Entry<String, Integer> one : cmd.entrySet()) {
             cmdList.add(one.getKey());
         }
@@ -50,8 +50,8 @@ public class CommandFiller {
     }
 
     public Map<String, CommandStatus> fillCommands() {
-        List<String> lm = new ArrayList<String>();
-        HashMap<String, Class<?>> classes = new HashMap<String, Class<?>>();
+        List<String> lm = new ArrayList<>();
+        HashMap<String, Class<?>> classes = new HashMap<>();
         try {
             lm = getClassesFromPackage(packagePath);
         } catch (ClassNotFoundException e) {
@@ -89,7 +89,7 @@ public class CommandFiller {
     }
 
     public static List<String> getClassesFromPackage(String pckgname) throws ClassNotFoundException {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         try {
             for (URL jarURL : ((URLClassLoader) Residence.class.getClassLoader()).getURLs()) {
                 try {
@@ -106,7 +106,7 @@ public class CommandFiller {
 
     private static List<String> getClassesInSamePackageFromJar(String packageName, String jarPath) {
         JarFile jarFile = null;
-        List<String> listOfCommands = new ArrayList<String>();
+        List<String> listOfCommands = new ArrayList<>();
         try {
             jarFile = new JarFile(jarPath);
             Enumeration<JarEntry> en = jarFile.entries();

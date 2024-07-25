@@ -38,7 +38,7 @@ public class flags implements cmd {
         c.get("Description", "List of flags");
         c.get("Info", List.of("For flag values, usually true allows the action, and false denys the action."));
 
-        Set<String> keys = new HashSet<String>();
+        Set<String> keys = new HashSet<>();
         if (c.getC().isConfigurationSection(c.getPath() + "SubCommands")) {
             keys = c.getC().getConfigurationSection(c.getPath() + "SubCommands").getKeys(false);
         }

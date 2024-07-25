@@ -15,7 +15,7 @@ import com.bekvon.bukkit.residence.protection.CuboidArea;
 
 public class AutoSelection {
 
-    private final HashMap<UUID, AutoSelector> list = new HashMap<UUID, AutoSelector>();
+    private final HashMap<UUID, AutoSelector> list = new HashMap<>();
     private final Residence plugin;
 
     public AutoSelection(Residence residence) {
@@ -46,7 +46,7 @@ public class AutoSelection {
 
         ResidencePlayer rplayer = ResidencePlayer.get(player);
 
-        int Curenttime = (int) (System.currentTimeMillis() - AutoSelector.getTime()) / 1000;
+        int Curenttime = (int) (System.currentTimeMillis() - AutoSelector.time()) / 1000;
 
         if (Curenttime > 270) {
             list.remove(player.getUniqueId());
@@ -105,7 +105,7 @@ public class AutoSelection {
             changed = true;
         }
 
-        PermissionGroup group = AutoSelector.getGroup();
+        PermissionGroup group = AutoSelector.group();
 
         if (area.getXSize() > rplayer.getMaxX()) {
             return;

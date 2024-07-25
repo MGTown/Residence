@@ -229,7 +229,7 @@ public enum Flags {
 
     public void addGroup(String group) {
         if (groups == null)
-            groups = new HashSet<String>();
+            groups = new HashSet<>();
         groups.add(group.toLowerCase());
     }
 

@@ -22,13 +22,12 @@ import com.bekvon.bukkit.residence.containers.lm;
 import com.bekvon.bukkit.residence.event.ResidenceCommandEvent;
 import com.bekvon.bukkit.residence.permissions.PermissionManager.ResPerm;
 
-import net.Zrips.CMILib.Logs.CMIDebug;
 import net.Zrips.CMILib.Messages.CMIMessages;
 import net.Zrips.CMILib.RawMessages.RawMessage;
 
 public class ResidenceCommandListener implements CommandExecutor {
 
-    private static List<String> AdminCommands = new ArrayList<String>();
+    private static List<String> AdminCommands = new ArrayList<>();
     private static final String label = "res";
 
     public String getLabel() {
@@ -66,219 +65,223 @@ public class ResidenceCommandListener implements CommandExecutor {
             plugin.msg(sender, lm.General_DisabledWorld);
             return true;
         }
-        if (cmdName.equals("resreload")) {
-            if (sender instanceof Player player) {
-                if (plugin.getPermissionManager().isResidenceAdmin(player) && ResPerm.topadmin.hasPermission(player)) {
+        switch (cmdName) {
+            case "resreload" -> {
+                if (sender instanceof Player player) {
+                    if (plugin.getPermissionManager().isResidenceAdmin(player) && ResPerm.topadmin.hasPermission(player)) {
+                        plugin.reloadPlugin();
+                        sender.sendMessage(ChatColor.GREEN + "[Residence] Reloaded config.");
+                        CMIMessages.consoleMessage("[Residence] Reloaded by " + player.getName() + ".");
+                    } else
+                        plugin.msg(player, lm.General_NoPermission);
+                } else {
                     plugin.reloadPlugin();
-                    sender.sendMessage(ChatColor.GREEN + "[Residence] Reloaded config.");
-                    CMIMessages.consoleMessage("[Residence] Reloaded by " + player.getName() + ".");
-                } else
-                    plugin.msg(player, lm.General_NoPermission);
-            } else {
-                plugin.reloadPlugin();
-                CMIMessages.consoleMessage("[Residence] Reloaded by console.");
-            }
-            return true;
-        }
-        if (cmdName.equals("resload")) {
-            if (!(sender instanceof Player) || sender instanceof Player && plugin.getPermissionManager().isResidenceAdmin(sender) && ResPerm.topadmin.hasPermission(sender)) {
-                try {
-                    plugin.loadYml();
-                    sender.sendMessage(ChatColor.GREEN + "[Residence] Reloaded save file...");
-                } catch (Exception ex) {
-                    sender.sendMessage(ChatColor.RED + "[Residence] Unable to reload the save file, exception occured!");
-                    sender.sendMessage(ChatColor.RED + ex.getMessage());
-                    Logger.getLogger(Residence.getInstance().getClass().getName()).log(Level.SEVERE, null, ex);
+                    CMIMessages.consoleMessage("[Residence] Reloaded by console.");
                 }
-            } else
-                plugin.msg(sender, lm.General_NoPermission);
-            return true;
-        } else if (cmdName.equals("rc")) {
-            cmd cmdClass = getCmdClass(new String[]{"rc"});
-            if (cmdClass == null) {
-                sendUsage(sender, cmdName);
                 return true;
             }
-
-            if (args.length == 1 && args[0].equals("?")) {
-                return commandHelp(new String[]{"rc", "?"}, false, sender, command);
+            case "resload" -> {
+                if (!(sender instanceof Player) || sender instanceof Player && plugin.getPermissionManager().isResidenceAdmin(sender) && ResPerm.topadmin.hasPermission(sender)) {
+                    try {
+                        plugin.loadYml();
+                        sender.sendMessage(ChatColor.GREEN + "[Residence] Reloaded save file...");
+                    } catch (Exception ex) {
+                        sender.sendMessage(ChatColor.RED + "[Residence] Unable to reload the save file, exception occured!");
+                        sender.sendMessage(ChatColor.RED + ex.getMessage());
+                        Logger.getLogger(Residence.getInstance().getClass().getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else
+                    plugin.msg(sender, lm.General_NoPermission);
+                return true;
             }
-
-            boolean respond = cmdClass.perform(Residence.getInstance(), sender, reduceArgs(args), false);
-            if (!respond)
-                sendUsage(sender, cmdName);
-            return true;
-        } else if (cmdName.equals("res") || cmdName.equals("residence") || cmdName.equals("resadmin")) {
-            boolean resadmin = false;
-            if (sender instanceof Player) {
-                if (cmdName.equals("resadmin") && plugin.getPermissionManager().isResidenceAdmin(sender)) {
-                    resadmin = true;
-                }
-                if (cmdName.equals("resadmin") && !plugin.getPermissionManager().isResidenceAdmin(sender)) {
-                    sender.sendMessage(plugin.msg(lm.Residence_NonAdmin));
+            case "rc" -> {
+                cmd cmdClass = getCmdClass(new String[]{"rc"});
+                if (cmdClass == null) {
+                    sendUsage(sender, cmdName);
                     return true;
                 }
-                if (cmdName.equals("res") && plugin.getPermissionManager().isResidenceAdmin(sender) && plugin.getConfigManager().getAdminFullAccess()) {
-                    resadmin = true;
-                }
-            } else {
-                resadmin = true;
-            }
-            if (args.length > 0 && args[args.length - 1].equalsIgnoreCase("?") || args.length > 1 && args[args.length - 2].equals("?")) {
-                return commandHelp(args, resadmin, sender, command);
-            }
 
-            Player player = null;
-            if (sender instanceof Player) {
-                player = (Player) sender;
-            } else {
-                resadmin = true;
-            }
-            if (plugin.getConfigManager().allowAdminsOnly() && !resadmin && player != null) {
-                plugin.msg(player, lm.General_AdminOnly);
+                if (args.length == 1 && args[0].equals("?")) {
+                    return commandHelp(new String[]{"rc", "?"}, false, sender, command);
+                }
+
+                boolean respond = cmdClass.perform(Residence.getInstance(), sender, reduceArgs(args), false);
+                if (!respond)
+                    sendUsage(sender, cmdName);
                 return true;
             }
-
-            if (args.length == 0) {
-                args = new String[1];
-                args[0] = "?";
-            }
-
-            String cmd = args[0].toLowerCase();
-
-            switch (cmd) {
-                case "delete":
-                    cmd = "remove";
-                    break;
-                case "sz":
-                    cmd = "subzone";
-                    break;
-            }
-
-            cmd cmdClass = getCmdClass(args);
-            if (cmdClass == null) {
-                return commandHelp(new String[]{"?"}, resadmin, sender, command);
-            }
-
-            if (!resadmin && !ResPerm.command_$1.hasPermission(sender, args[0].toLowerCase())) {
-                RawMessage rm = new RawMessage();
-                rm.addText(plugin.msg(lm.General_NoPermission))
-                        .addHover("&7" + ResPerm.command_$1.getPermission(args[0].toLowerCase()));
-                rm.show(sender);
-
-                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-                plugin.msg(console, plugin.msg(lm.General_NoPermission) + " " + ResPerm.command_$1.getPermission(args[0].toLowerCase()));
-                return true;
-            }
-
-            if (!resadmin && player != null && plugin.resadminToggle.contains(player.getName())) {
-                if (!plugin.getPermissionManager().isResidenceAdmin(player)) {
-                    plugin.resadminToggle.remove(player.getName());
-                }
-            }
-
-            String[] targ = reduceArgs(args);
-
-            for (Method met : cmdClass.getClass().getMethods()) {
-                if (!met.isAnnotationPresent(CommandAnnotation.class))
-                    continue;
-                CommandAnnotation cs = met.getAnnotation(CommandAnnotation.class);
-
-                varCheck:
+            case "res", "residence", "resadmin" -> {
+                boolean resadmin = false;
                 if (sender instanceof Player) {
-                    int[] regVar = cs.regVar();
-                    List<Integer> list = new ArrayList<Integer>();
-                    boolean more = true;
-                    for (int one : regVar) {
-                        if (one < 0)
-                            more = false;
-                        list.add(one);
+                    if (cmdName.equals("resadmin") && plugin.getPermissionManager().isResidenceAdmin(sender)) {
+                        resadmin = true;
                     }
-
-                    int size = targ.length;
-
-                    boolean good = true;
-
-                    if (list.isEmpty())
-                        break varCheck;
-
-                    if (list.contains(666) || list.contains(-666)) {
-                        plugin.msg(sender, lm.Invalid_FromConsole);
-                        return false;
+                    if (cmdName.equals("resadmin") && !plugin.getPermissionManager().isResidenceAdmin(sender)) {
+                        sender.sendMessage(plugin.msg(lm.Residence_NonAdmin));
+                        return true;
                     }
-
-                    if (list.contains(-size))
-                        good = false;
-
-                    if (list.contains(size))
-                        good = true;
-
-                    if (list.contains(-100) && size == 0)
-                        good = false;
-
-                    if (more && !list.contains(size))
-                        good = false;
-
-                    if (!good) {
-                        String[] tempArray = new String[args.length + 1];
-                        System.arraycopy(args, 0, tempArray, 0, args.length);
-                        tempArray[args.length] = "?";
-                        args = tempArray;
-                        return commandHelp(args, resadmin, sender, command);
+                    if (cmdName.equals("res") && plugin.getPermissionManager().isResidenceAdmin(sender) && plugin.getConfigManager().getAdminFullAccess()) {
+                        resadmin = true;
                     }
                 } else {
+                    resadmin = true;
+                }
+                if (args.length > 0 && args[args.length - 1].equalsIgnoreCase("?") || args.length > 1 && args[args.length - 2].equals("?")) {
+                    return commandHelp(args, resadmin, sender, command);
+                }
 
-                    int[] consoleVar = cs.consoleVar();
-                    List<Integer> list = new ArrayList<Integer>();
-                    boolean more = true;
-                    for (int one : consoleVar) {
-                        if (one < 0)
-                            more = false;
-                        list.add(one);
-                    }
-                    int size = targ.length;
-                    boolean good = true;
+                Player player = null;
+                if (sender instanceof Player) {
+                    player = (Player) sender;
+                } else {
+                    resadmin = true;
+                }
+                if (plugin.getConfigManager().allowAdminsOnly() && !resadmin && player != null) {
+                    plugin.msg(player, lm.General_AdminOnly);
+                    return true;
+                }
 
-                    if (list.isEmpty())
-                        break varCheck;
+                if (args.length == 0) {
+                    args = new String[1];
+                    args[0] = "?";
+                }
 
-                    if (list.contains(666) || list.contains(-666)) {
-                        plugin.msg(sender, lm.Invalid_Ingame);
-                        return false;
-                    }
+                String cmd = args[0].toLowerCase();
 
-                    if (list.contains(-size))
-                        good = false;
+                switch (cmd) {
+                    case "delete":
+                        cmd = "remove";
+                        break;
+                    case "sz":
+                        cmd = "subzone";
+                        break;
+                }
 
-                    if (list.contains(size))
-                        good = true;
+                cmd cmdClass = getCmdClass(args);
+                if (cmdClass == null) {
+                    return commandHelp(new String[]{"?"}, resadmin, sender, command);
+                }
 
-                    if (list.contains(-100) && size == 0)
-                        good = false;
+                if (!resadmin && !ResPerm.command_$1.hasPermission(sender, args[0].toLowerCase())) {
+                    RawMessage rm = new RawMessage();
+                    rm.addText(plugin.msg(lm.General_NoPermission))
+                            .addHover("&7" + ResPerm.command_$1.getPermission(args[0].toLowerCase()));
+                    rm.show(sender);
 
-                    if (more && !list.contains(size))
-                        good = false;
-                    if (!good) {
-                        String[] tempArray = new String[args.length + 1];
-                        System.arraycopy(args, 0, tempArray, 0, args.length);
-                        tempArray[args.length] = "?";
-                        args = tempArray;
-                        return commandHelp(args, resadmin, sender, command);
+                    ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                    plugin.msg(console, plugin.msg(lm.General_NoPermission) + " " + ResPerm.command_$1.getPermission(args[0].toLowerCase()));
+                    return true;
+                }
+
+                if (!resadmin && player != null && plugin.resadminToggle.contains(player.getName())) {
+                    if (!plugin.getPermissionManager().isResidenceAdmin(player)) {
+                        plugin.resadminToggle.remove(player.getName());
                     }
                 }
+
+                String[] targ = reduceArgs(args);
+
+                for (Method met : cmdClass.getClass().getMethods()) {
+                    if (!met.isAnnotationPresent(CommandAnnotation.class))
+                        continue;
+                    CommandAnnotation cs = met.getAnnotation(CommandAnnotation.class);
+
+                    varCheck:
+                    if (sender instanceof Player) {
+                        int[] regVar = cs.regVar();
+                        List<Integer> list = new ArrayList<Integer>();
+                        boolean more = true;
+                        for (int one : regVar) {
+                            if (one < 0)
+                                more = false;
+                            list.add(one);
+                        }
+
+                        int size = targ.length;
+
+                        boolean good = true;
+
+                        if (list.isEmpty())
+                            break varCheck;
+
+                        if (list.contains(666) || list.contains(-666)) {
+                            plugin.msg(sender, lm.Invalid_FromConsole);
+                            return false;
+                        }
+
+                        if (list.contains(-size))
+                            good = false;
+
+                        if (list.contains(size))
+                            good = true;
+
+                        if (list.contains(-100) && size == 0)
+                            good = false;
+
+                        if (more && !list.contains(size))
+                            good = false;
+
+                        if (!good) {
+                            String[] tempArray = new String[args.length + 1];
+                            System.arraycopy(args, 0, tempArray, 0, args.length);
+                            tempArray[args.length] = "?";
+                            args = tempArray;
+                            return commandHelp(args, resadmin, sender, command);
+                        }
+                    } else {
+
+                        int[] consoleVar = cs.consoleVar();
+                        List<Integer> list = new ArrayList<Integer>();
+                        boolean more = true;
+                        for (int one : consoleVar) {
+                            if (one < 0)
+                                more = false;
+                            list.add(one);
+                        }
+                        int size = targ.length;
+                        boolean good = true;
+
+                        if (list.isEmpty())
+                            break varCheck;
+
+                        if (list.contains(666) || list.contains(-666)) {
+                            plugin.msg(sender, lm.Invalid_Ingame);
+                            return false;
+                        }
+
+                        if (list.contains(-size))
+                            good = false;
+
+                        if (list.contains(size))
+                            good = true;
+
+                        if (list.contains(-100) && size == 0)
+                            good = false;
+
+                        if (more && !list.contains(size))
+                            good = false;
+                        if (!good) {
+                            String[] tempArray = new String[args.length + 1];
+                            System.arraycopy(args, 0, tempArray, 0, args.length);
+                            tempArray[args.length] = "?";
+                            args = tempArray;
+                            return commandHelp(args, resadmin, sender, command);
+                        }
+                    }
+                }
+
+                Boolean respond = cmdClass.perform(Residence.getInstance(), sender, targ, resadmin);
+
+                if (respond != null && !respond) {
+                    String[] tempArray = new String[args.length + 1];
+                    System.arraycopy(args, 0, tempArray, 0, args.length);
+                    tempArray[args.length] = "?";
+                    args = tempArray;
+                    return commandHelp(args, resadmin, sender, command);
+                }
+
+                return respond != null && respond;
             }
-
-            Boolean respond = cmdClass.perform(Residence.getInstance(), sender, targ, resadmin);
-
-            if (respond != null && !respond) {
-                String[] tempArray = new String[args.length + 1];
-                System.arraycopy(args, 0, tempArray, 0, args.length);
-                tempArray[args.length] = "?";
-                args = tempArray;
-                return commandHelp(args, resadmin, sender, command);
-            }
-
-            return respond != null && respond;
         }
 
         return this.onCommand(sender, command, label, args);
@@ -337,16 +340,16 @@ public class ResidenceCommandListener implements CommandExecutor {
     }
 
     private String getHelpPath(String[] args) {
-        String helppath = "res";
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].equalsIgnoreCase("?")) {
+        StringBuilder helppath = new StringBuilder("res");
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("?")) {
                 break;
             }
-            helppath = helppath + "." + args[i];
+            helppath.append(".").append(arg);
         }
-        if (!plugin.getHelpPages().containesEntry(helppath) && args.length > 0)
+        if (!plugin.getHelpPages().containesEntry(helppath.toString()) && args.length > 0)
             return getHelpPath(Arrays.copyOf(args, args.length - 1));
-        return helppath;
+        return helppath.toString();
     }
 
 }

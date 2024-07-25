@@ -9,7 +9,7 @@ import com.bekvon.bukkit.residence.utils.Utils;
 
 public class SignInfo {
 
-    HashMap<String, Signs> AllSigns = new HashMap<String, Signs>();
+    HashMap<String, Signs> AllSigns = new HashMap<>();
 
     public SignInfo() {
     }

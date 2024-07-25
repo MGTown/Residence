@@ -10,13 +10,12 @@ import org.bukkit.entity.Player;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.permissions.PermissionManager.ResPerm;
-import com.bekvon.bukkit.residence.vaultinterface.ResidenceVaultAdapter;
 
 public class PlayerGroup {
 
     ResidencePlayer resPlayer;
     long lastCheck = 0L;
-    HashMap<String, PermissionGroup> groups = new HashMap<String, PermissionGroup>();
+    HashMap<String, PermissionGroup> groups = new HashMap<>();
 
     public PlayerGroup(ResidencePlayer resPlayer) {
         this.resPlayer = resPlayer;
@@ -43,7 +42,7 @@ public class PlayerGroup {
             return;
 
         this.lastCheck = System.currentTimeMillis();
-        List<PermissionGroup> posibleGroups = new ArrayList<PermissionGroup>();
+        List<PermissionGroup> posibleGroups = new ArrayList<>();
         String group;
         if (Residence.getInstance().getPermissionManager().getPlayersGroups().containsKey(resPlayer.getName().toLowerCase())) {
             group = Residence.getInstance().getPermissionManager().getPlayersGroups().get(resPlayer.getName().toLowerCase());
@@ -68,16 +67,16 @@ public class PlayerGroup {
 
         PermissionGroup finalGroup = null;
         if (posibleGroups.size() == 1)
-            finalGroup = posibleGroups.get(0);
+            finalGroup = posibleGroups.getFirst();
 
-        for (int i = 0; i < posibleGroups.size(); i++) {
+        for (PermissionGroup posibleGroup : posibleGroups) {
             if (finalGroup == null) {
-                finalGroup = posibleGroups.get(i);
+                finalGroup = posibleGroup;
                 continue;
             }
 
-            if (finalGroup.getPriority() < posibleGroups.get(i).getPriority())
-                finalGroup = posibleGroups.get(i);
+            if (finalGroup.getPriority() < posibleGroup.getPriority())
+                finalGroup = posibleGroup;
         }
 
         if (finalGroup == null || !Residence.getInstance().getPermissionManager().getGroups().containsValue(finalGroup)) {

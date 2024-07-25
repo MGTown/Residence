@@ -19,7 +19,7 @@ public class WorldItemManager {
 
     public WorldItemManager(Residence plugin) {
         this.plugin = plugin;
-        lists = new ArrayList<WorldItemList>();
+        lists = new ArrayList<>();
         this.readLists();
     }
 

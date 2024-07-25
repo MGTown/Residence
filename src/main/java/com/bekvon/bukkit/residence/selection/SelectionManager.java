@@ -43,7 +43,7 @@ public class SelectionManager {
     protected Server server;
     protected Residence plugin;
 
-    private final HashMap<UUID, Visualizer> vMap = new HashMap<UUID, Visualizer>();
+    private final HashMap<UUID, Visualizer> vMap = new HashMap<>();
 
     Permission ignoreyPermission = new Permission(ResPerm.bypass_ignorey.getPermission(), PermissionDefault.FALSE);
     Permission ignoreyinsubzonePermission = new Permission(ResPerm.bypass_ignoreyinsubzone.getPermission(), PermissionDefault.FALSE);
@@ -319,38 +319,26 @@ public class SelectionManager {
         UP, DOWN, PLUSX, PLUSZ, MINUSX, MINUSZ;
 
         public Direction getOpposite() {
-            switch (this) {
-                case DOWN:
-                    return UP;
-                case MINUSX:
-                    return PLUSX;
-                case MINUSZ:
-                    return PLUSZ;
-                case PLUSX:
-                    return MINUSX;
-                case PLUSZ:
-                    return MINUSZ;
-                case UP:
-                    return DOWN;
-                default:
-                    break;
-            }
-            return this;
+            return switch (this) {
+                case DOWN -> UP;
+                case MINUSX -> PLUSX;
+                case MINUSZ -> PLUSZ;
+                case PLUSX -> MINUSX;
+                case PLUSZ -> MINUSZ;
+                case UP -> DOWN;
+                default -> this;
+            };
         }
     }
 
     public SelectionManager(Server server, Residence plugin) {
         this.plugin = plugin;
         this.server = server;
-        selections = Collections.synchronizedMap(new HashMap<UUID, Selection>());
+        selections = Collections.synchronizedMap(new HashMap<>());
     }
 
     public Selection getSelection(Player player) {
-        Selection s = selections.get(player.getUniqueId());
-        if (s == null) {
-            s = new Selection(player);
-            selections.put(player.getUniqueId(), s);
-        }
+        Selection s = selections.computeIfAbsent(player.getUniqueId(), k -> new Selection(player));
         return s;
     }
 
@@ -572,7 +560,7 @@ public class SelectionManager {
             RowStart = 0;
         }
 
-        List<Location> locList = new ArrayList<Location>();
+        List<Location> locList = new ArrayList<>();
 
         if (lowLoc.getWorld() != loc.getWorld())
             return locList;
@@ -601,7 +589,7 @@ public class SelectionManager {
 
     public List<Location> GetLocationsWallsByData(Location loc, Double TX, Double TY, Double TZ, Location lowLoc, SelectionSides Sides,
                                                   double Range) {
-        List<Location> locList = new ArrayList<Location>();
+        List<Location> locList = new ArrayList<>();
 
         // North wall
         if (Sides.ShowNorthSide())
@@ -632,7 +620,7 @@ public class SelectionManager {
 
     public List<Location> GetLocationsCornersByData(Location loc, Double TX, Double TY, Double TZ, Location lowLoc, SelectionSides Sides,
                                                     double Range) {
-        List<Location> locList = new ArrayList<Location>();
+        List<Location> locList = new ArrayList<>();
 
         // North bottom line
         if (Sides.ShowBottomSide() && Sides.ShowNorthSide())
@@ -702,8 +690,8 @@ public class SelectionManager {
         Location loc = player.getLocation();
         int Range = plugin.getConfigManager().getVisualizerRange();
 
-        final List<Location> locList = new ArrayList<Location>();
-        final List<Location> errorLocList = new ArrayList<Location>();
+        final List<Location> locList = new ArrayList<>();
+        final List<Location> errorLocList = new ArrayList<>();
 
         final boolean same = v.isSameLoc();
         if (!same) {

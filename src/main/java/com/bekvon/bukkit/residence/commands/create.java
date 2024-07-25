@@ -9,7 +9,6 @@ import net.Zrips.CMILib.FileHandler.ConfigReader;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class create implements cmd {

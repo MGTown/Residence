@@ -35,7 +35,6 @@ import net.Zrips.CMILib.Effects.CMIEffectManager.CMIParticle;
 import net.Zrips.CMILib.FileHandler.ConfigReader;
 import net.Zrips.CMILib.Items.CMIMaterial;
 import net.Zrips.CMILib.Locale.YmlMaker;
-import net.Zrips.CMILib.Logs.CMIDebug;
 import net.Zrips.CMILib.Messages.CMIMessages;
 import net.Zrips.CMILib.Version.Version;
 
@@ -62,7 +61,7 @@ public class ConfigManager {
     protected boolean LwcOnDelete = false;
     protected boolean LwcOnBuy = false;
     protected boolean LwcOnUnrent = false;
-    protected List<Material> LwcMatList = new ArrayList<Material>();
+    protected List<Material> LwcMatList = new ArrayList<>();
     protected boolean UseClean = false;
     protected boolean PvPFlagPrevent;
     protected boolean OverridePvp;
@@ -207,17 +206,17 @@ public class ConfigManager {
 //    protected boolean DisableNoFlagMessageUse;
 //    protected List<String> DisableNoFlagMessageWorlds = new ArrayList<String>();
 
-    private final HashMap<String, Integer> AntiGreefRangeGaps = new HashMap<String, Integer>();
+    private final HashMap<String, Integer> AntiGreefRangeGaps = new HashMap<>();
 
     protected boolean TNTExplodeBelow;
     protected int TNTExplodeBelowLevel;
     protected boolean CreeperExplodeBelow;
     protected int CreeperExplodeBelowLevel;
 
-    protected List<Material> customContainers = new ArrayList<Material>();
-    protected List<Material> customBothClick = new ArrayList<Material>();
-    protected List<Material> customRightClick = new ArrayList<Material>();
-    protected List<Material> CleanBlocks = new ArrayList<Material>();
+    protected List<Material> customContainers = new ArrayList<>();
+    protected List<Material> customBothClick = new ArrayList<>();
+    protected List<Material> customRightClick = new ArrayList<>();
+    protected List<Material> CleanBlocks = new ArrayList<>();
 
     protected List<String> NoFlowWorlds;
     protected List<String> AutoCleanUpWorlds;
@@ -236,14 +235,14 @@ public class ConfigManager {
     protected Location KickLocation;
     protected Location FlyLandLocation;
 
-    protected List<RandomTeleport> RTeleport = new ArrayList<RandomTeleport>();
+    protected List<RandomTeleport> RTeleport = new ArrayList<>();
 
-    protected List<String> DisabledWorldsList = new ArrayList<String>();
+    protected List<String> DisabledWorldsList = new ArrayList<>();
 
     protected int rtCooldown;
     protected int rtMaxTries;
 
-    private final HashMap<FlagState, ItemStack> guiBottonStates = new HashMap<FlagState, ItemStack>();
+    private final HashMap<FlagState, ItemStack> guiBottonStates = new HashMap<>();
 
     private boolean enforceAreaInsideArea;
 
@@ -337,7 +336,7 @@ public class ConfigManager {
         globalCreatorDefaults = new FlagPermissions();
         globalRentedDefaults = new FlagPermissions();
         globalResidenceDefaults = new FlagPermissions();
-        globalGroupDefaults = new HashMap<String, FlagPermissions>();
+        globalGroupDefaults = new HashMap<>();
         UpdateConfigFile();
         this.loadFlags();
     }
@@ -347,7 +346,7 @@ public class ConfigManager {
     }
 
     public static List<String> getClassesFromPackage(String pckgname, String cleaner) throws ClassNotFoundException {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         try {
             for (URL jarURL : ((URLClassLoader) Residence.class.getClassLoader()).getURLs()) {
                 try {
@@ -364,7 +363,7 @@ public class ConfigManager {
 
     private static List<String> getClassesInSamePackageFromJar(String packageName, String jarPath, String cleaner) {
         JarFile jarFile = null;
-        List<String> listOfCommands = new ArrayList<String>();
+        List<String> listOfCommands = new ArrayList<>();
         try {
             jarFile = new JarFile(jarPath);
             Enumeration<JarEntry> en = jarFile.entries();
@@ -396,7 +395,7 @@ public class ConfigManager {
 
     public void copyOverTranslations() {
 
-        ArrayList<String> languages = new ArrayList<String>();
+        ArrayList<String> languages = new ArrayList<>();
         try {
             languages.addAll(getClassesFromPackage("Language", null));
         } catch (ClassNotFoundException e1) {
@@ -432,7 +431,7 @@ public class ConfigManager {
     }
 
     public static List<String> ColorsArray(List<String> text, Boolean colorize) {
-        List<String> temp = new ArrayList<String>();
+        List<String> temp = new ArrayList<>();
         for (String part : text) {
             if (colorize)
                 part = Colors(part);
@@ -607,7 +606,7 @@ public class ConfigManager {
 
     public void UpdateConfigFile() {
 
-        String defaultWorldName = Bukkit.getServer().getWorlds().size() > 0 ? Bukkit.getServer().getWorlds().get(0).getName() : "World";
+        String defaultWorldName = Bukkit.getServer().getWorlds().size() > 0 ? Bukkit.getServer().getWorlds().getFirst().getName() : "World";
 
         ConfigReader c = null;
         try {
@@ -863,7 +862,7 @@ public class ConfigManager {
         c.addComment("Global.Tp.TeleportTitleMessage", "Show aditional message in title message area when player is teleporting to residence");
         TeleportTitleMessage = c.get("Global.Tp.TeleportTitleMessage", true);
 
-        Set<World> worlds = new HashSet<World>();
+        Set<World> worlds = new HashSet<>();
 
         for (int i = 0; i < 3 && i < Bukkit.getWorlds().size(); i++) {
             worlds.add(Bukkit.getWorlds().get(i));
@@ -971,9 +970,7 @@ public class ConfigManager {
         c.addComment("Global.AutoCleanUp.Worlds", "Worlds to be included in check list");
         AutoCleanUpWorlds = c.get("Global.AutoCleanUp.Worlds", Collections.singletonList(defaultWorldName));
 
-        for (int i = 0; i < AutoCleanUpWorlds.size(); i++) {
-            AutoCleanUpWorlds.set(i, AutoCleanUpWorlds.get(i).toLowerCase());
-        }
+        AutoCleanUpWorlds.replaceAll(String::toLowerCase);
 
         c.addComment("Global.AutoCleanUp.TrasnferToUser", "When enabled we will transfer residence to defined user instead of removing it", "Defined user will be excluded from cleanup operation");
         AutoCleanTrasnferToUser = c.get("Global.AutoCleanUp.TrasnferToUser", false);
@@ -1009,7 +1006,7 @@ public class ConfigManager {
                 "Use specific world name if you only want to use this limitation on this world",
                 "Specific world name will override 'all' value");
 
-        List<String> ls = new ArrayList<String>();
+        List<String> ls = new ArrayList<>();
         if (c.getC().isInt("Global.AntiGreef.RangeGap")) {
             ls.add("all-" + c.getC().getInt("Global.AntiGreef.RangeGap"));
             c.get("Global.AntiGreef.RangeGaps", List.of("all-" + c.getC().getInt("Global.AntiGreef.RangeGap")));
@@ -1086,9 +1083,7 @@ public class ConfigManager {
             }
 
             CleanWorlds = c.get("Global.AntiGreef.ResCleaning.Worlds", Collections.singletonList(defaultWorldName));
-            for (int i = 0; i < CleanWorlds.size(); i++) {
-                CleanWorlds.set(i, CleanWorlds.get(i).toLowerCase());
-            }
+            CleanWorlds.replaceAll(String::toLowerCase);
         }
 
         c.addComment("Global.AntiGreef.Flags.Prevent", "By setting this to true flags from list will be protected from change while there is some one inside residence besides owner",
@@ -1277,21 +1272,21 @@ public class ConfigManager {
         NewPlayerRangeZ = c.get("Global.NewPlayer.Range.Z", 5);
 
         c.addComment("Global.CustomContainers", "Experimental - The following settings are lists of block IDs to be used as part of the checks for the 'container' and 'use' flags when using mods.");
-        List<String> pls = c.get("Global.CustomContainers", new ArrayList<String>());
+        List<String> pls = c.get("Global.CustomContainers", new ArrayList<>());
         for (String one : pls) {
             Material mat = CMILib.getInstance().getItemManager().getMaterial(one);
             if (mat != null)
                 customContainers.add(mat);
         }
 
-        pls = c.get("Global.CustomBothClick", new ArrayList<String>());
+        pls = c.get("Global.CustomBothClick", new ArrayList<>());
         for (String one : pls) {
             Material mat = CMILib.getInstance().getItemManager().getMaterial(one);
             if (mat != null)
                 customBothClick.add(mat);
         }
 
-        pls = c.get("Global.CustomRightClick", new ArrayList<String>());
+        pls = c.get("Global.CustomRightClick", new ArrayList<>());
         for (String one : pls) {
             Material mat = CMILib.getInstance().getItemManager().getMaterial(one);
             if (mat != null)
@@ -1454,9 +1449,9 @@ public class ConfigManager {
         DynMapFillForSale = c.get("DynMap.Fill.ForSale", "#0066ff");
 
         c.addComment("DynMap.VisibleRegions", "Shows only regions on this list");
-        DynMapVisibleRegions = c.get("DynMap.VisibleRegions", new ArrayList<String>());
+        DynMapVisibleRegions = c.get("DynMap.VisibleRegions", new ArrayList<>());
         c.addComment("DynMap.HiddenRegions", "Hides region on map even if its not hidden in game");
-        DynMapHiddenRegions = c.get("DynMap.HiddenRegions", new ArrayList<String>());
+        DynMapHiddenRegions = c.get("DynMap.HiddenRegions", new ArrayList<>());
 
         c.addComment("Pl3xMap.Use", "Enables or disable Pl3xMap Support");
         Pl3xMapUse = c.get("Pl3xMap.Use", false);
@@ -1497,9 +1492,9 @@ public class ConfigManager {
         Pl3xMapFillForSale = argb(CMINumber.clamp((int) (Pl3xMapFillOpacity * 255), 0, 255), processColor(c.get("Pl3xMap.Fill.ForSale", "#0066ff")));
 
         c.addComment("Pl3xMap.VisibleRegions", "Shows only regions on this list");
-        Pl3xMapVisibleRegions = c.get("Pl3xMap.VisibleRegions", new ArrayList<String>());
+        Pl3xMapVisibleRegions = c.get("Pl3xMap.VisibleRegions", new ArrayList<>());
         c.addComment("Pl3xMap.HiddenRegions", "Hides region on map even if its not hidden in game");
-        Pl3xMapHiddenRegions = c.get("Pl3xMap.HiddenRegions", new ArrayList<String>());
+        Pl3xMapHiddenRegions = c.get("Pl3xMap.HiddenRegions", new ArrayList<>());
 
         c.addComment("Raid", "In development");
 
